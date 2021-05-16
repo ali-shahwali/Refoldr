@@ -81,6 +81,7 @@
 import { db, Timestamp } from "../firebase";
 import Snippet from "./Snippet";
 import store from "../store";
+import Cookies from "js-cookie"
 
 export default {
   name: "Bank",
@@ -97,6 +98,14 @@ export default {
       snackbarNewSnippetAlreadyExists: false,
       snackbarSaved: false,
     };
+  },
+  mounted() { // on after page load
+    setTimeout(() => {
+      if (Cookies.get("lastSnippet") != null) {
+       this.selectedSnippetIndex = parseInt(Cookies.get("lastSnippet"))
+      this.selectedSnippet = this.Snippets[parseInt(Cookies.get("lastSnippet"))] 
+      }
+    }, 500);
   },
   methods: {
     async toggleFavorite(id, bool) {
@@ -188,6 +197,11 @@ export default {
     },
     selectSnippet(snippet) {
       this.selectedSnippet = snippet;
+      for (let i = 0; i < this.Snippets.length; i++) {
+          if (this.Snippets[i].id == snippet.id) {
+            Cookies.set("lastSnippet", i);
+          }
+      }
     },
   },
   firestore: {

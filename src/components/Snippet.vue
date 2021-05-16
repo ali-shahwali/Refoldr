@@ -4,7 +4,7 @@
       <v-text-field
         dense
         solo
-        class="mt-8"
+        class="mt-6"
         label="Title"
         placeholder="Min 3 characters"
         v-model="snippet.name"
@@ -14,7 +14,7 @@
       <v-select
         dense
         solo
-        class="mt-8 ml-5"
+        class="mt-6 ml-5"
         v-model="snippet.lang"
         :items="langs"
         menu-props="auto"
