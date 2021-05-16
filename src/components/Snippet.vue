@@ -9,6 +9,7 @@
         placeholder="Min 3 characters"
         v-model="snippet.name"
         style="max-width: 450px;"
+        spellcheck="false"
       ></v-text-field>
       <v-select
         dense
@@ -97,6 +98,8 @@ import "prismjs/components/prism-python";
 import "prismjs/components/prism-csharp";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-haskell";
+import "prismjs/components/prism-markup";
+
 
 export default {
   name: "Snippet",
@@ -110,7 +113,7 @@ export default {
   data: function() {
     return {
       langs: [
-        "html",
+        "markup",
         "javascript",
         "csharp",
         "elixir",
