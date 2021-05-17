@@ -107,7 +107,7 @@ export default {
         this.selectedSnippetIndex = index;
         this.selectedSnippet = this.Snippets[this.selectedSnippetIndex];
       }
-    }, 250);
+    }, 1000);
   },
   methods: {
     async toggleFavorite(id, bool) {
@@ -129,7 +129,7 @@ export default {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: "Javascript",
+          lang: "JavaScript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -140,7 +140,7 @@ export default {
           id: docRef.id,
           name: "New snippet",
           content: "",
-          lang: "Javascript",
+          lang: "JavaScript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id

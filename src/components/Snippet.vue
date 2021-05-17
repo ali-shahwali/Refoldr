@@ -65,7 +65,7 @@
             <v-icon color="error">mdi-delete</v-icon>
           </v-btn>
         </template>
-        <span>Delete snippet </span>
+        <span>Delete</span>
       </v-tooltip>
     </v-toolbar>
 
@@ -121,7 +121,10 @@ import "prismjs/themes/prism-tomorrow.css";
 import { PrismEditor } from "vue-prism-editor";
 import "vue-prism-editor/dist/prismeditor.min.css";
 import { highlight, languages } from "prismjs/components/prism-core";
+
 import "prismjs/components/prism-clike";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-markup-templating.js";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-elixir";
 import "prismjs/components/prism-css";
@@ -130,8 +133,15 @@ import "prismjs/components/prism-python";
 import "prismjs/components/prism-csharp";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-haskell";
-import "prismjs/components/prism-markup";
 import "prismjs/components/prism-r";
+import "prismjs/components/prism-c";
+import "prismjs/components/prism-cpp";
+import "prismjs/components/prism-php";
+import "prismjs/components/prism-go";
+import "prismjs/components/prism-swift";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-typescript";
+
 
 export default {
   name: "Snippet",
@@ -139,22 +149,29 @@ export default {
     Editor: PrismEditor
   },
   props: {
-    snippet: {type: Array},
+    snippet: {},
     selectedSnippetIndex: Number
   },
   data: function() {
     return {
       langs: [
-        "Markup",
-        "Javascript",
-        "Csharp",
+        "HTML (markup)",
+        "JavaScript",
+        "TypeScript",
+        "C",
+        "C++",
+        "C#",
         "Elixir",
         "Python",
         "Rust",
         "CSS",
         "Java",
         "Haskell",
-        "R"
+        "R",
+        "PHP",
+        "Go",
+        "Swift",
+        "JSX (React)",
       ],
       lineNumbers: true,
       readonly: false,
@@ -166,12 +183,22 @@ export default {
   methods: {
     // realtime syntax highlighting
     highlighter(code) {
+      let lang = this.snippet.lang;
+      if(lang === "C#")
+        lang = "csharp";
+      else if(lang === "HTML (markup)")
+        lang = "markup";
+      else if(lang === "C++")
+        lang = "cpp";
+      else if(lang === "JSX (React)")
+        lang = "jsx";
+
       return highlight(
         code,
         {
-          ...languages[this.snippet.lang.toLocaleLowerCase()]
+          ...languages[lang.toLocaleLowerCase()]
         },
-        this.snippet.lang
+        lang
       );
     },
     deleteSnippet() {
