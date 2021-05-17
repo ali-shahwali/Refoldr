@@ -52,20 +52,20 @@
       </v-col>
     </v-row>
     <v-snackbar
-        style="margin: 0 1rem 4rem 0"
-        color="error"
-        v-model="snackbarAlreadyExists"
-        :timeout="timeout"
-        right
+      style="margin: 0 1rem 4rem 0"
+      color="error"
+      v-model="snackbarAlreadyExists"
+      :timeout="timeout"
+      right
     >
       Snippet with that name already exists!
     </v-snackbar>
     <v-snackbar
-        style="margin: 0 1rem 4rem 0"
-        color="success"
-        v-model="snackbarSaved"
-        :timeout="timeout"
-        right
+      style="margin: 0 1rem 4rem 0"
+      color="success"
+      v-model="snackbarSaved"
+      :timeout="timeout"
+      right
     >
       Changes saved!
 
@@ -81,7 +81,7 @@
 import { db, Timestamp } from "../firebase";
 import Snippet from "./Snippet";
 import store from "../store";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 export default {
   name: "Bank",
@@ -96,16 +96,18 @@ export default {
       timeout: 2000,
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
-      snackbarSaved: false,
+      snackbarSaved: false
     };
   },
-  mounted() { // on after page load
+  mounted() {
+    // on after page load
     setTimeout(() => {
-      if (Cookies.get("lastSnippet") != null) {
-       this.selectedSnippetIndex = parseInt(Cookies.get("lastSnippet"))
-      this.selectedSnippet = this.Snippets[parseInt(Cookies.get("lastSnippet"))] 
+      let index = parseInt(Cookies.get("lastSnippet"));
+      if (index !== undefined) {
+        this.selectedSnippetIndex = index;
+        this.selectedSnippet = this.Snippets[this.selectedSnippetIndex];
       }
-    }, 500);
+    }, 250);
   },
   methods: {
     async toggleFavorite(id, bool) {
@@ -116,17 +118,18 @@ export default {
     },
     async createNewSnippet() {
       // check to see if the user already has an empty new snippet on their account (prevent spamming)
-      const newSnippet = await db.collection("snippets")
-          .where("uid", "==", store.state.user.data.id)
-          .where("name", "==", "New snippet")
-          .get()
+      const newSnippet = await db
+        .collection("snippets")
+        .where("uid", "==", store.state.user.data.id)
+        .where("name", "==", "New snippet")
+        .get();
 
       if (newSnippet.empty === true) {
-        console.log('create new snippet')
+        console.log("create new snippet");
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: "javascript",
+          lang: "Javascript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -137,52 +140,48 @@ export default {
           id: docRef.id,
           name: "New snippet",
           content: "",
-          lang: "javascript",
+          lang: "Javascript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
         });
-      }
-      else {
+      } else {
         // send user to the existing blank snippet
         for (let i = 0; i < this.Snippets.length; i++) {
           if (this.Snippets[i].name === "New snippet") {
             this.selectedSnippetIndex = i;
             this.selectSnippet(this.Snippets[i]);
             break;
-          }
-          else {
+          } else {
             i++;
           }
         }
       }
     },
     async updateSnippet(id, name, content, lang) {
-      const check = await db.collection("snippets")
-          .where("uid", "==", store.state.user.data.id)
-          .where("name", "==", name)
-          .get()
+      const check = await db
+        .collection("snippets")
+        .where("uid", "==", store.state.user.data.id)
+        .where("name", "==", name)
+        .get();
 
       let count = 0;
-      check.forEach((doc) => {
-        if(doc.id === id)
-        // eslint-disable-next-line no-empty
-        {}
-        else
-          count++
-      })
-      if(count === 0) {
+      check.forEach(doc => {
+        if (doc.id === id) {
+          // eslint-disable-next-line no-empty
+        } else count++;
+      });
+      if (count === 0) {
         await db
-            .collection("snippets")
-            .doc(id)
-            .update({
-              name: name,
-              content: content,
-              lang: lang
-            });
+          .collection("snippets")
+          .doc(id)
+          .update({
+            name: name,
+            content: content,
+            lang: lang
+          });
         this.snackbarSaved = true;
-      }
-      else {
+      } else {
         this.snackbarAlreadyExists = true;
       }
     },
@@ -198,11 +197,11 @@ export default {
     selectSnippet(snippet) {
       this.selectedSnippet = snippet;
       for (let i = 0; i < this.Snippets.length; i++) {
-          if (this.Snippets[i].id == snippet.id) {
-            Cookies.set("lastSnippet", i);
-          }
+        if (this.Snippets[i].id === snippet.id) {
+          Cookies.set("lastSnippet", i);
+        }
       }
-    },
+    }
   },
   firestore: {
     Snippets: db

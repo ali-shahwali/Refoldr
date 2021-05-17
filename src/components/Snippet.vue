@@ -11,7 +11,8 @@
         style="max-width: 450px;"
         spellcheck="false"
       ></v-text-field>
-      <v-select
+      <v-autocomplete
+        auto-select-first
         dense
         solo
         class="mt-6 ml-5"
@@ -20,26 +21,52 @@
         menu-props="auto"
         label="Language"
         style="max-width: 300px"
-      ></v-select>
+        spellcheck="false"
+      ></v-autocomplete>
       <v-spacer></v-spacer>
-      <v-btn @click="updateSnippet" icon>
-        <v-icon color="primary">mdi-content-save</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" @click="updateSnippet" icon>
+            <v-icon color="primary">mdi-content-save</v-icon>
+          </v-btn>
+        </template>
+        <span> <v-icon left small>mdi-microsoft-windows</v-icon>CTRL + S</span
+        ><br />
+        <span><v-icon left small>mdi-apple</v-icon>CMD + S</span>
+      </v-tooltip>
 
-      <v-btn
-        @click="toggleFavorite(snippet.id, false)"
-        icon
-        v-if="snippet.isFavorited"
-      >
-        <v-icon color="yellow darken-3">mdi-star</v-icon>
-      </v-btn>
-      <v-btn @click="toggleFavorite(snippet.id, true)" icon v-else>
-        <v-icon color="grey lighten-1">mdi-star-outline</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-if="snippet.isFavorited"
+            @click="toggleFavorite(snippet.id, false)"
+            icon
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon color="yellow darken-3">mdi-star</v-icon>
+          </v-btn>
+          <v-btn
+            v-else
+            @click="toggleFavorite(snippet.id, true)"
+            v-bind="attrs"
+            v-on="on"
+            icon
+          >
+            <v-icon color="grey lighten-1">mdi-star-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>Favorite</span>
+      </v-tooltip>
 
-      <v-btn @click="deleteSnippet" icon>
-        <v-icon color="error">mdi-delete</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" @click="deleteSnippet" icon>
+            <v-icon color="error">mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        <span>Delete snippet </span>
+      </v-tooltip>
     </v-toolbar>
 
     <Editor
@@ -52,7 +79,12 @@
       :readonly="readonly"
     >
     </Editor>
-    <v-parallax translate="false" src="../assets/SnippetMissingBG.svg" style="height: calc(100vh - 113px)" v-else>
+    <v-parallax
+      translate="false"
+      src="../assets/SnippetMissingBG.svg"
+      style="height: calc(100vh - 113px)"
+      v-else
+    >
       <v-row align="center" justify="center">
         <v-col class="text-center" cols="12">
           <v-icon class="mb-4" color="primary" x-large dark
@@ -99,7 +131,7 @@ import "prismjs/components/prism-csharp";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-haskell";
 import "prismjs/components/prism-markup";
-
+import "prismjs/components/prism-r";
 
 export default {
   name: "Snippet",
@@ -107,21 +139,22 @@ export default {
     Editor: PrismEditor
   },
   props: {
-    snippet: {},
+    snippet: {type: Array},
     selectedSnippetIndex: Number
   },
   data: function() {
     return {
       langs: [
-        "markup",
-        "javascript",
-        "csharp",
-        "elixir",
-        "python",
-        "rust",
-        "css",
-        "java",
-        "haskell"
+        "Markup",
+        "Javascript",
+        "Csharp",
+        "Elixir",
+        "Python",
+        "Rust",
+        "CSS",
+        "Java",
+        "Haskell",
+        "R"
       ],
       lineNumbers: true,
       readonly: false,
@@ -136,7 +169,7 @@ export default {
       return highlight(
         code,
         {
-          ...languages[this.snippet.lang]
+          ...languages[this.snippet.lang.toLocaleLowerCase()]
         },
         this.snippet.lang
       );
