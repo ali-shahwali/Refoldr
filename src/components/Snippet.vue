@@ -323,7 +323,7 @@ export default {
       readonly: false,
       snackbarDeleted: false,
       dialogDelete: false,
-      snackbarCopied: true,
+      snackbarCopied: false,
       textDeleted: "Snippet deleted!",
       timeout: 2000
     };
