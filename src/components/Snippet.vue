@@ -155,12 +155,12 @@
     </v-snackbar>
 
     <v-snackbar
-        style="margin: 0 0 4rem 0"
-        color="primary"
-        v-model="snackbarCopied"
-        :timeout="timeout"
+      style="margin: 0 0 4rem 0"
+      color="primary"
+      v-model="snackbarCopied"
+      :timeout="timeout"
     >
-        Copied to clipboard!
+      Copied to clipboard!
       <template v-slot:action="{ attrs }">
         <v-btn icon v-bind="attrs" @click="snackbarCopied = false">
           <v-icon>mdi-close</v-icon>
@@ -168,10 +168,7 @@
       </template>
     </v-snackbar>
 
-    <v-dialog
-        v-model="dialogDelete"
-        max-width="30vw"
-    >
+    <v-dialog v-model="dialogDelete" max-width="30vw">
       <v-card>
         <v-card-actions>
           <v-card-title class="headline">
@@ -179,17 +176,14 @@
           </v-card-title>
           <v-spacer></v-spacer>
           <v-btn
-              class="mr-4"
-              color="primary"
-              text
-              @click="dialogDelete = false"
+            class="mr-4"
+            color="primary"
+            text
+            @click="dialogDelete = false"
           >
             No, Cancel
           </v-btn>
-          <v-btn
-              color="error"
-              @click="deleteSnippet()"
-          >
+          <v-btn color="error" @click="deleteSnippet()">
             <v-icon left>mdi-delete</v-icon>
             Yes, Delete
           </v-btn>
@@ -197,18 +191,25 @@
       </v-card>
     </v-dialog>
 
-    <v-btn
-      @click="copyToClipboard()"
-      fab
-      dark
-      large
-      color="primary"
-      style="position: fixed; bottom: 70px; right: 20px"
-    >
-      <v-icon dark>
-        mdi-content-copy
-      </v-icon>
-    </v-btn>
+    <v-tooltip left>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          @click="copyToClipboard()"
+          fab
+          dark
+          large
+          color="primary"
+          style="position: fixed; bottom: 65px; right: 30px"
+        >
+          <v-icon dark>
+            mdi-content-copy
+          </v-icon>
+        </v-btn>
+      </template>
+      <span>Copy to clipboard</span>
+    </v-tooltip>
   </div>
 </template>
 
