@@ -12,35 +12,45 @@
         spellcheck="false"
       ></v-text-field>
       <v-autocomplete
-              style="max-width: 300px;"
-              v-model="snippet.lang"
-              :items="langs"
-              dense
-              solo
-              class="mt-6 ml-5"
-              label="Language"
-              menu-props="auto"
-              spellcheck="false"
-              item-text="name"
-              item-value="value"
+        style="max-width: 300px;"
+        v-model="snippet.lang"
+        :items="langs"
+        dense
+        solo
+        class="mt-6 ml-5"
+        label="Language"
+        menu-props="auto"
+        spellcheck="false"
+        item-text="name"
+        item-value="value"
+      >
+        <template v-slot:selection="data">
+          <v-avatar
+            rounded
+            size="small"
+            style="height: 20px; width: 20px;"
+            class="mr-2"
+            left
+          >
+            <v-img :src="data.item.avatar"></v-img>
+          </v-avatar>
+          {{ data.item.name }}
+        </template>
+        <template v-slot:item="data">
+          <template>
+            <v-list-item-avatar
+              rounded
+              size="small"
+              style="height: 20px; width: 20px;"
             >
-            <template v-slot:selection="data">
-                  <v-avatar rounded size="small" style="height: 20px; width: 20px;" class="mr-2" left>
-                    <v-img :src="data.item.avatar"></v-img>
-                  </v-avatar>
-                  {{ data.item.name }}
-              </template>
-              <template v-slot:item="data">
-                <template>
-                  <v-list-item-avatar rounded size="small" style="height: 20px; width: 20px;">
-                    <img :src="data.item.avatar">
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </template>
-            </v-autocomplete>
+              <img :src="data.item.avatar" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-html="data.item.name"></v-list-item-title>
+            </v-list-item-content>
+          </template>
+        </template>
+      </v-autocomplete>
       <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -87,16 +97,27 @@
       </v-tooltip>
     </v-toolbar>
 
-    <Editor
-      v-if="selectedSnippetIndex !== undefined"
+    <editor
       class="editor"
-      language="Snippet.lang"
+      v-if="selectedSnippetIndex !== undefined"
       v-model="snippet.content"
-      :highlight="highlighter"
-      :line-numbers="lineNumbers"
-      :readonly="readonly"
-    >
-    </Editor>
+      @init="editorInit"
+      :lang="snippet.lang"
+      theme="dracula"
+      width="100%"
+      height="calc(100vh - 176px)"
+      :options="{
+        useWorker: false,
+        selectionStyle: 'text',
+        enableLiveAutocompletion: true,
+        displayIndentGuides: true,
+        fontSize: '1.25rem',
+        highlightSelectedWord: true,
+        fadeFoldWidgets: true,
+        showPrintMargin: false
+      }"
+    ></editor>
+
     <v-parallax
       translate="false"
       src="../assets/SnippetMissingBG.svg"
@@ -134,37 +155,12 @@
 </template>
 
 <script>
-import "prismjs";
-import "prismjs/themes/prism-tomorrow.css";
-import { PrismEditor } from "vue-prism-editor";
-import "vue-prism-editor/dist/prismeditor.min.css";
-import { highlight, languages } from "prismjs/components/prism-core";
-
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-markup-templating.js';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-elixir';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-rust';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-csharp';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-haskell';
-import 'prismjs/components/prism-r';
-import 'prismjs/components/prism-c';
-import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-php';
-import 'prismjs/components/prism-go';
-import 'prismjs/components/prism-swift';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-typescript';
-
+import Editor from "vue2-ace-editor";
 
 export default {
   name: "Snippet",
   components: {
-    Editor: PrismEditor
+    editor: Editor
   },
   props: {
     snippet: {},
@@ -173,42 +169,111 @@ export default {
   data: function() {
     return {
       langs: [
-        { name: "HTML (markup)", value: "markup",avatar: require('@/assets/langs/markup.svg')},
-        { name: "CSS", value: "css", avatar: require('@/assets/langs/css.svg')},
-        { name: "JavaScript", value: "javascript", avatar: require('@/assets/langs/javascript.svg')},
-        { name: "TypeScript", value: "typescript", avatar: require('@/assets/langs/typescript.svg')},
-        { name: "C", value: "c", avatar: require('@/assets/langs/c.svg')},
-        { name: "C++", value: "cpp", avatar: require('@/assets/langs/cpp.svg')},
-        { name: "C#", value: "csharp", avatar: require('@/assets/langs/csharp.svg')},
-        { name: "Elixir", value: "elixir", avatar: require('@/assets/langs/elixir.svg')},
-        { name: "Python", value: "python", avatar: require('@/assets/langs/python.svg')},
-        { name: "Rust", value: "rust", avatar: require('@/assets/langs/rust.svg')},
-        { name: "Java", value: "java", avatar: require('@/assets/langs/java.svg')},
-        { name: "Haskell", value: "haskell", avatar: require('@/assets/langs/haskell.svg')},
-        { name: "R", value: "r", avatar: require('@/assets/langs/r.svg')},
-        { name: "PHP", value: "php", avatar: require('@/assets/langs/php.svg')},
-        { name: "Go", value: "go", avatar: require('@/assets/langs/go.svg')},
-        { name: "Swift", value: "swift", avatar: require('@/assets/langs/swift.svg')},
-        { name: "JSX (React)", value: "jsx", avatar: require('@/assets/langs/jsx.svg')},
+        {
+          name: "HTML (markup)",
+          value: "markup",
+          avatar: require("@/assets/langs/markup.svg")
+        },
+        {
+          name: "CSS",
+          value: "css",
+          avatar: require("@/assets/langs/css.svg")
+        },
+        {
+          name: "JavaScript",
+          value: "javascript",
+          avatar: require("@/assets/langs/javascript.svg")
+        },
+        {
+          name: "TypeScript",
+          value: "typescript",
+          avatar: require("@/assets/langs/typescript.svg")
+        },
+        {
+          name: "C/C++",
+          value: "c_cpp",
+          avatar: require("@/assets/langs/c_cpp.svg")
+        },
+        {
+          name: "C#",
+          value: "csharp",
+          avatar: require("@/assets/langs/csharp.svg")
+        },
+        {
+          name: "Elixir",
+          value: "elixir",
+          avatar: require("@/assets/langs/elixir.svg")
+        },
+        {
+          name: "Python",
+          value: "python",
+          avatar: require("@/assets/langs/python.svg")
+        },
+        {
+          name: "Rust",
+          value: "rust",
+          avatar: require("@/assets/langs/rust.svg")
+        },
+        {
+          name: "Java",
+          value: "java",
+          avatar: require("@/assets/langs/java.svg")
+        },
+        {
+          name: "Haskell",
+          value: "haskell",
+          avatar: require("@/assets/langs/haskell.svg")
+        },
+        { name: "R", value: "r", avatar: require("@/assets/langs/r.svg") },
+        {
+          name: "PHP",
+          value: "php",
+          avatar: require("@/assets/langs/php.svg")
+        },
+        {
+          name: "Go",
+          value: "golang",
+          avatar: require("@/assets/langs/golang.svg")
+        },
+        {
+          name: "Swift",
+          value: "swift",
+          avatar: require("@/assets/langs/swift.svg")
+        },
+        {
+          name: "JSX (React)",
+          value: "jsx",
+          avatar: require("@/assets/langs/jsx.svg")
+        }
       ],
       lineNumbers: true,
       readonly: false,
+      content: "",
       snackbarDeleted: false,
       textDeleted: "Snippet deleted!",
       timeout: 2000
     };
   },
   methods: {
-    // realtime syntax highlighting
-    highlighter(code) {
-      let lang = this.snippet.lang;
-      return highlight(
-        code,
-        {
-          ...languages[lang]
-        },
-        lang
-      );
+    editorInit: function() {
+      require("brace/ext/language_tools"); //language extension prerequsite...
+      require("brace/mode/html");
+      require("brace/mode/javascript"); //language
+      require("brace/mode/python");
+      require("brace/mode/c_cpp");
+      require("brace/mode/csharp");
+      require("brace/mode/haskell");
+      require("brace/mode/elixir");
+      require("brace/mode/rust");
+      require("brace/mode/r");
+      require("brace/mode/css");
+      require("brace/mode/jsx");
+      require("brace/mode/swift");
+      require("brace/mode/golang");
+      require("brace/mode/php");
+      require("brace/mode/java");
+      require("brace/mode/typescript");
+      require("brace/theme/dracula");
     },
     deleteSnippet() {
       this.$emit("onDelete", this.snippet.id);
@@ -253,20 +318,7 @@ export default {
 </script>
 
 <style lang="scss">
-.editor {
-  background-color: #1e1e1e;
-  font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-  font-size: 1.25rem;
-  padding-top: 1rem;
-  line-height: 1.5;
-  height: calc(100vh - 176px);
-}
-.prism-editor__textarea:focus {
-  outline: none;
-}
-
 .v-parallax__image {
   transform: translate(-50%, 0px) !important;
 }
-
 </style>

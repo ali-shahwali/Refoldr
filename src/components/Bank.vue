@@ -213,7 +213,10 @@ export default {
       }
     },
     getLangSvg(lang) {
-      return require(`@/assets/langs/${lang}.svg`);
+      if(lang !== null)
+        return require(`@/assets/langs/${lang}.svg`);
+      else
+        return require("@/assets/langs/placeholder.svg");
     }
   },
   firestore: {
