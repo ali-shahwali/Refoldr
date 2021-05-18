@@ -89,7 +89,7 @@
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="deleteSnippet" icon>
+          <v-btn v-bind="attrs" v-on="on" @click="dialogDelete = true" icon>
             <v-icon color="error">mdi-delete</v-icon>
           </v-btn>
         </template>
@@ -98,6 +98,7 @@
     </v-toolbar>
 
     <editor
+      id="editor"
       class="editor"
       v-if="selectedSnippetIndex !== undefined"
       v-model="snippet.content"
@@ -114,7 +115,8 @@
         fontSize: '1.25rem',
         highlightSelectedWord: true,
         fadeFoldWidgets: true,
-        showPrintMargin: false
+        showPrintMargin: false,
+        highlightActiveLine: false
       }"
     ></editor>
 
@@ -151,6 +153,62 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-snackbar
+        style="margin: 0 0 4rem 0"
+        color="primary"
+        v-model="snackbarCopied"
+        :timeout="timeout"
+    >
+        Copied to clipboard!
+      <template v-slot:action="{ attrs }">
+        <v-btn icon v-bind="attrs" @click="snackbarCopied = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-dialog
+        v-model="dialogDelete"
+        max-width="30vw"
+    >
+      <v-card>
+        <v-card-actions>
+          <v-card-title class="headline">
+            Are you sure?
+          </v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn
+              class="mr-4"
+              color="primary"
+              text
+              @click="dialogDelete = false"
+          >
+            No, Cancel
+          </v-btn>
+          <v-btn
+              color="error"
+              @click="deleteSnippet()"
+          >
+            <v-icon left>mdi-delete</v-icon>
+            Yes, Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-btn
+      @click="copyToClipboard()"
+      fab
+      dark
+      large
+      color="primary"
+      style="position: fixed; bottom: 70px; right: 20px"
+    >
+      <v-icon dark>
+        mdi-content-copy
+      </v-icon>
+    </v-btn>
   </div>
 </template>
 
@@ -244,12 +302,28 @@ export default {
           name: "JSX (React)",
           value: "jsx",
           avatar: require("@/assets/langs/jsx.svg")
+        },
+        {
+          name: "SQL",
+          value: "sql",
+          avatar: require("@/assets/langs/sql.svg")
+        },
+        {
+          name: "MySQL",
+          value: "mysql",
+          avatar: require("@/assets/langs/mysql.svg")
+        },
+        {
+          name: "SQL Server",
+          value: "sqlserver",
+          avatar: require("@/assets/langs/sqlserver.svg")
         }
       ],
       lineNumbers: true,
       readonly: false,
-      content: "",
       snackbarDeleted: false,
+      dialogDelete: false,
+      snackbarCopied: true,
       textDeleted: "Snippet deleted!",
       timeout: 2000
     };
@@ -257,6 +331,8 @@ export default {
   methods: {
     editorInit: function() {
       require("brace/ext/language_tools"); //language extension prerequsite...
+      require("brace/ext/static_highlight");
+      require("brace/ext/textarea");
       require("brace/mode/html");
       require("brace/mode/javascript"); //language
       require("brace/mode/python");
@@ -273,11 +349,15 @@ export default {
       require("brace/mode/php");
       require("brace/mode/java");
       require("brace/mode/typescript");
+      require("brace/mode/sql");
+      require("brace/mode/mysql");
+      require("brace/mode/sqlserver");
       require("brace/theme/dracula");
     },
     deleteSnippet() {
       this.$emit("onDelete", this.snippet.id);
       this.snackbarDeleted = true;
+      this.dialogDelete = false;
     },
     // add to database
     async updateSnippet() {
@@ -297,6 +377,15 @@ export default {
     async toggleFavorite(id, bool) {
       this.$emit("onToggleFavorite", this.snippet.id, bool);
       this.snippet.isFavorited = bool;
+    },
+    copyToClipboard() {
+      let dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = this.snippet.content;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      this.snackbarCopied = true;
     },
     _saveListener(e) {
       if (
