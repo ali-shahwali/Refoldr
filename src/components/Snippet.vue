@@ -22,17 +22,17 @@
               menu-props="auto"
               spellcheck="false"
               item-text="name"
-              item-value="name"
+              item-value="value"
             >
             <template v-slot:selection="data">
-                  <v-avatar size="small" style="height: 20px; width: 20px;" class="mr-2" left>
+                  <v-avatar rounded size="small" style="height: 20px; width: 20px;" class="mr-2" left>
                     <v-img :src="data.item.avatar"></v-img>
                   </v-avatar>
                   {{ data.item.name }}
               </template>
               <template v-slot:item="data">
                 <template>
-                  <v-list-item-avatar size="small" style="height: 20px; width: 20px;">
+                  <v-list-item-avatar rounded size="small" style="height: 20px; width: 20px;">
                     <img :src="data.item.avatar">
                   </v-list-item-avatar>
                   <v-list-item-content>
@@ -173,23 +173,23 @@ export default {
   data: function() {
     return {
       langs: [
-        { name: "HTML (markup)", avatar: require('@/assets/langs/html.svg')},
-        { name: "CSS", avatar: require('@/assets/langs/css.svg')},
-        { name: "JavaScript", avatar: require('@/assets/langs/js.svg')},
-        { name: "TypeScript", avatar: require('@/assets/langs/ts.svg')},
-        { name: "C", avatar: require('@/assets/langs/c.svg')},
-        { name: "C++", avatar: require('@/assets/langs/cpp.svg')},
-        { name: "C#", avatar: require('@/assets/langs/csharp.svg')},
-        { name: "Elixir", avatar: require('@/assets/langs/elixir.svg')},
-        { name: "Python", avatar: require('@/assets/langs/python.svg')},
-        { name: "Rust", avatar: require('@/assets/langs/rust.svg')},
-        { name: "Java", avatar: require('@/assets/langs/java.svg')},
-        { name: "Haskell", avatar: require('@/assets/langs/haskell.svg')},
-        { name: "R", avatar: require('@/assets/langs/r.svg')},
-        { name: "PHP", avatar: require('@/assets/langs/php.svg')},
-        { name: "Go", avatar: require('@/assets/langs/go.svg')},
-        { name: "Swift", avatar: require('@/assets/langs/swift.svg')},
-        { name: "JSX (React)", avatar: require('@/assets/langs/jsx.svg')},
+        { name: "HTML (markup)", value: "markup",avatar: require('@/assets/langs/markup.svg')},
+        { name: "CSS", value: "css", avatar: require('@/assets/langs/css.svg')},
+        { name: "JavaScript", value: "javascript", avatar: require('@/assets/langs/javascript.svg')},
+        { name: "TypeScript", value: "typescript", avatar: require('@/assets/langs/typescript.svg')},
+        { name: "C", value: "c", avatar: require('@/assets/langs/c.svg')},
+        { name: "C++", value: "cpp", avatar: require('@/assets/langs/cpp.svg')},
+        { name: "C#", value: "csharp", avatar: require('@/assets/langs/csharp.svg')},
+        { name: "Elixir", value: "elixir", avatar: require('@/assets/langs/elixir.svg')},
+        { name: "Python", value: "python", avatar: require('@/assets/langs/python.svg')},
+        { name: "Rust", value: "rust", avatar: require('@/assets/langs/rust.svg')},
+        { name: "Java", value: "java", avatar: require('@/assets/langs/java.svg')},
+        { name: "Haskell", value: "haskell", avatar: require('@/assets/langs/haskell.svg')},
+        { name: "R", value: "r", avatar: require('@/assets/langs/r.svg')},
+        { name: "PHP", value: "php", avatar: require('@/assets/langs/php.svg')},
+        { name: "Go", value: "go", avatar: require('@/assets/langs/go.svg')},
+        { name: "Swift", value: "swift", avatar: require('@/assets/langs/swift.svg')},
+        { name: "JSX (React)", value: "jsx", avatar: require('@/assets/langs/jsx.svg')},
       ],
       lineNumbers: true,
       readonly: false,
@@ -202,19 +202,10 @@ export default {
     // realtime syntax highlighting
     highlighter(code) {
       let lang = this.snippet.lang;
-      if(lang === "C#")
-        lang = "csharp";
-      else if(lang === "HTML (markup)")
-        lang = "markup";
-      else if(lang === "C++")
-        lang = "cpp";
-      else if(lang === "JSX (React)")
-        lang = "jsx";
-
       return highlight(
         code,
         {
-          ...languages[lang.toLocaleLowerCase()]
+          ...languages[lang]
         },
         lang
       );
@@ -277,4 +268,5 @@ export default {
 .v-parallax__image {
   transform: translate(-50%, 0px) !important;
 }
+
 </style>

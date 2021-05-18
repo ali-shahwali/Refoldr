@@ -17,14 +17,24 @@
                 :key="snippet.id"
               >
                 <template>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item-avatar
+                        size="small"
+                        v-bind="attrs"
+                        v-on="on"
+                        rounded
+                        style="height: 20px; width: 20px;"
+                      >
+                        <img :src="getLangSvg(snippet.lang)" />
+                      </v-list-item-avatar>
+                    </template>
+                    <span>{{ snippet.lang }}</span>
+                  </v-tooltip>
                   <v-list-item-content>
                     <v-list-item-title
                       v-text="snippet.name"
                     ></v-list-item-title>
-                    <v-list-item-subtitle
-                      class="text--primary"
-                      v-text="snippet.lang"
-                    ></v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-icon v-if="snippet.isFavorited" color="yellow darken-3"
@@ -129,7 +139,7 @@ export default {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: "JavaScript",
+          lang: "javascript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -140,7 +150,7 @@ export default {
           id: docRef.id,
           name: "New snippet",
           content: "",
-          lang: "JavaScript",
+          lang: "javascript",
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -201,6 +211,9 @@ export default {
           Cookies.set("lastSnippet", i);
         }
       }
+    },
+    getLangSvg(lang) {
+      return require(`@/assets/langs/${lang}.svg`);
     }
   },
   firestore: {
