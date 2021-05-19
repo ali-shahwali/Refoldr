@@ -68,7 +68,6 @@
               v-bind="attrs"
               v-on="on"
               @click="copyToClipboard()"
-              color="primary"
               icon
           >
             <v-icon dark>
@@ -208,6 +207,7 @@
 
 <script>
 import Editor from "vue2-ace-editor";
+import {supportedLangs} from "../assets/langs";
 
 export default {
   name: "Snippet",
@@ -220,99 +220,7 @@ export default {
   },
   data: function() {
     return {
-      langs: [
-        {
-          name: "HTML (markup)",
-          value: "markup",
-          avatar: require("@/assets/langs/markup.svg")
-        },
-        {
-          name: "CSS",
-          value: "css",
-          avatar: require("@/assets/langs/css.svg")
-        },
-        {
-          name: "JavaScript",
-          value: "javascript",
-          avatar: require("@/assets/langs/javascript.svg")
-        },
-        {
-          name: "TypeScript",
-          value: "typescript",
-          avatar: require("@/assets/langs/typescript.svg")
-        },
-        {
-          name: "C/C++",
-          value: "c_cpp",
-          avatar: require("@/assets/langs/c_cpp.svg")
-        },
-        {
-          name: "C#",
-          value: "csharp",
-          avatar: require("@/assets/langs/csharp.svg")
-        },
-        {
-          name: "Elixir",
-          value: "elixir",
-          avatar: require("@/assets/langs/elixir.svg")
-        },
-        {
-          name: "Python",
-          value: "python",
-          avatar: require("@/assets/langs/python.svg")
-        },
-        {
-          name: "Rust",
-          value: "rust",
-          avatar: require("@/assets/langs/rust.svg")
-        },
-        {
-          name: "Java",
-          value: "java",
-          avatar: require("@/assets/langs/java.svg")
-        },
-        {
-          name: "Haskell",
-          value: "haskell",
-          avatar: require("@/assets/langs/haskell.svg")
-        },
-        { name: "R", value: "r", avatar: require("@/assets/langs/r.svg") },
-        {
-          name: "PHP",
-          value: "php",
-          avatar: require("@/assets/langs/php.svg")
-        },
-        {
-          name: "Go",
-          value: "golang",
-          avatar: require("@/assets/langs/golang.svg")
-        },
-        {
-          name: "Swift",
-          value: "swift",
-          avatar: require("@/assets/langs/swift.svg")
-        },
-        {
-          name: "JSX (React)",
-          value: "jsx",
-          avatar: require("@/assets/langs/jsx.svg")
-        },
-        {
-          name: "SQL",
-          value: "sql",
-          avatar: require("@/assets/langs/sql.svg")
-        },
-        {
-          name: "MySQL",
-          value: "mysql",
-          avatar: require("@/assets/langs/mysql.svg")
-        },
-        {
-          name: "SQL Server",
-          value: "sqlserver",
-          avatar: require("@/assets/langs/sqlserver.svg")
-        }
-      ],
+      langs: supportedLangs,
       lineNumbers: true,
       readonly: false,
       snackbarDeleted: false,
@@ -324,11 +232,9 @@ export default {
   },
   methods: {
     editorInit: function() {
-      require("brace/ext/language_tools"); //language extension prerequsite...
-      require("brace/ext/static_highlight");
-      require("brace/ext/textarea");
+      require("brace/ext/language_tools");
       require("brace/mode/html");
-      require("brace/mode/javascript"); //language
+      require("brace/mode/javascript");
       require("brace/mode/python");
       require("brace/mode/c_cpp");
       require("brace/mode/csharp");
@@ -346,6 +252,7 @@ export default {
       require("brace/mode/sql");
       require("brace/mode/mysql");
       require("brace/mode/sqlserver");
+      require("brace/mode/matlab");
       require("brace/theme/dracula");
     },
     deleteSnippet() {

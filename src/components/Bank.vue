@@ -5,9 +5,18 @@
         <v-list two-line style="height: calc(100vh - 112px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
-              <v-btn block @click="createNewSnippet" color="primary">
-                <v-icon left>mdi-plus</v-icon> Add new
-              </v-btn>
+              <v-row>
+                <v-col cols="10">
+                  <v-btn block @click="createNewSnippet" color="primary">
+                    <v-icon left>mdi-plus</v-icon> Add new
+                  </v-btn>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn @click="dialogSettings = true" icon>
+                    <v-icon>mdi-cog</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </div>
             <v-divider></v-divider>
             <template v-for="(snippet, index) in Snippets">
@@ -85,6 +94,27 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-dialog v-model="dialogSettings" max-width="30vw">
+      <v-card>
+        <v-card-actions>
+          <v-card-title class="headline">
+            Settings
+          </v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn
+              class="mr-4"
+              text
+              @click="dialogSettings = false"
+          >
+            cancel
+          </v-btn>
+          <v-btn color="primary">
+            save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -106,7 +136,8 @@ export default {
       timeout: 2000,
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
-      snackbarSaved: false
+      snackbarSaved: false,
+      dialogSettings: false,
     };
   },
   mounted() {
@@ -213,10 +244,8 @@ export default {
       }
     },
     getLangSvg(lang) {
-      if(lang !== null)
-        return require(`@/assets/langs/${lang}.svg`);
-      else
-        return require("@/assets/langs/placeholder.svg");
+      if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
+      else return require("@/assets/langs/placeholder.svg");
     }
   },
   firestore: {
