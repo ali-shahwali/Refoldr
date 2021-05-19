@@ -62,7 +62,22 @@
         ><br />
         <span><v-icon left small>mdi-apple</v-icon>CMD + S</span>
       </v-tooltip>
-
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              v-bind="attrs"
+              v-on="on"
+              @click="copyToClipboard()"
+              color="primary"
+              icon
+          >
+            <v-icon dark>
+              mdi-content-copy
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>Copy to clipboard</span>
+      </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -86,7 +101,6 @@
         </template>
         <span>Favorite</span>
       </v-tooltip>
-
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" @click="dialogDelete = true" icon>
@@ -153,7 +167,6 @@
         </v-btn>
       </template>
     </v-snackbar>
-
     <v-snackbar
       style="margin: 0 0 4rem 0"
       color="primary"
@@ -190,26 +203,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-tooltip left>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          v-on="on"
-          @click="copyToClipboard()"
-          fab
-          dark
-          large
-          color="primary"
-          style="position: fixed; bottom: 65px; right: 30px"
-        >
-          <v-icon dark>
-            mdi-content-copy
-          </v-icon>
-        </v-btn>
-      </template>
-      <span>Copy to clipboard</span>
-    </v-tooltip>
   </div>
 </template>
 

@@ -208,7 +208,7 @@ export default {
       this.selectedSnippet = snippet;
       for (let i = 0; i < this.Snippets.length; i++) {
         if (this.Snippets[i].id === snippet.id) {
-          Cookies.set("lastSnippet", i);
+          Cookies.set("lastSnippet", i, { expires: 7 }); // expires in 1 week
         }
       }
     },
