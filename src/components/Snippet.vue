@@ -53,10 +53,16 @@
       </v-autocomplete>
       <v-spacer></v-spacer>
       <small
-        v-if="snippet.content !== initialSnippetContent"
+        v-if="state === 'synced'"
+        style="color: green"
+        class="mr-5"
+        >Synced*</small
+      >
+      <small
+        v-if="state === 'modified'"
         style="color: orange"
         class="mr-5"
-        >Unsaved Changes*</small
+        >Modified*</small
       >
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -113,6 +119,7 @@
     </v-toolbar>
 
     <editor
+      @input="fieldUpdate"
       id="editor"
       class="editor"
       v-if="selectedSnippetIndex !== undefined"
@@ -210,6 +217,7 @@
 <script>
 import Editor from "vue2-ace-editor";
 import { supportedLangs } from "../assets/langs";
+import { debounce } from 'debounce';
 
 export default {
   name: "Snippet",
@@ -231,7 +239,8 @@ export default {
       textDeleted: "Snippet deleted!",
       timeout: 2000,
       initialSnippetContent: undefined,
-      initialSnippetName: undefined
+      initialSnippetName: undefined,
+      state: 'loading'
     };
   },
   methods: {
@@ -280,6 +289,13 @@ export default {
         //
       }
     },
+    fieldUpdate() {
+      this.state = 'modified';
+      this.debouncedUpdate();
+    },
+    debouncedUpdate: debounce(function() {
+      this.updateSnippet();
+    }, 1500),
     async toggleFavorite(id, bool) {
       this.$emit("onToggleFavorite", this.snippet.id, bool);
       this.snippet.isFavorited = bool;
