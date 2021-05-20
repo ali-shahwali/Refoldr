@@ -95,23 +95,76 @@
       </template>
     </v-snackbar>
 
-    <v-dialog v-model="dialogSettings" max-width="30vw">
+    <v-dialog
+        v-model="dialogSettings"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+    >
       <v-card>
-        <v-card-actions>
-          <v-card-title class="headline">
-            Settings
-          </v-card-title>
+        <v-toolbar
+            dark
+            color="primary"
+        >
           <v-btn
-              class="mr-4"
-              text
+              icon
+              dark
               @click="dialogSettings = false"
           >
-            cancel
+            <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-btn color="primary">
-            save
-          </v-btn>
-        </v-card-actions>
+          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn
+                dark
+                text
+                @click="dialogSettings = false"
+            >
+              Save
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-list
+            three-line
+            subheader
+        >
+          <v-subheader>Preferences</v-subheader>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Set preferred language</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-list
+            three-line
+            subheader
+        >
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox ></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Notifications</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox ></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Sound</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Auto-add widgets</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-card>
     </v-dialog>
   </div>

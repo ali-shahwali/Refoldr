@@ -52,7 +52,12 @@
         </template>
       </v-autocomplete>
       <v-spacer></v-spacer>
-      <small v-if="snippet.content != initialSnippetContent" style="color: orange" class="mr-5">Unsaved Changes*</small>
+      <small
+        v-if="snippet.content !== initialSnippetContent"
+        style="color: orange"
+        class="mr-5"
+        >Unsaved Changes*</small
+      >
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" @click="updateSnippet">
@@ -66,12 +71,7 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-              v-bind="attrs"
-              v-on="on"
-              @click="copyToClipboard()"
-              icon
-          >
+          <v-btn v-bind="attrs" v-on="on" @click="copyToClipboard()" icon>
             <v-icon dark>
               mdi-content-copy
             </v-icon>
@@ -209,7 +209,7 @@
 
 <script>
 import Editor from "vue2-ace-editor";
-import {supportedLangs} from "../assets/langs";
+import { supportedLangs } from "../assets/langs";
 
 export default {
   name: "Snippet",
@@ -230,7 +230,8 @@ export default {
       snackbarCopied: false,
       textDeleted: "Snippet deleted!",
       timeout: 2000,
-      initialSnippetContent: ""
+      initialSnippetContent: undefined,
+      initialSnippetName: undefined
     };
   },
   methods: {
@@ -304,7 +305,16 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this._saveListener);
-    this.initialSnippetContent = this.snippet.content;
+  },
+  beforeUpdate() {
+    if(this.initialSnippetContent === undefined || this.initialSnippetName === undefined) {
+      this.initialSnippetContent = this.snippet.content;
+      this.initialSnippetName = this.snippet.name;
+    }
+    else if(this.initialSnippetName !== this.snippet.name) {
+      this.initialSnippetContent = this.snippet.content;
+      this.initialSnippetName = this.snippet.name;
+    }
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this._saveListener);
