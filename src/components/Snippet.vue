@@ -52,10 +52,12 @@
         </template>
       </v-autocomplete>
       <v-spacer></v-spacer>
+      <small v-if="snippet.content != initialSnippetContent" style="color: orange" class="mr-5">Unsaved Changes*</small>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="updateSnippet" icon>
-            <v-icon color="primary">mdi-content-save</v-icon>
+          <v-btn v-bind="attrs" v-on="on" @click="updateSnippet">
+            <v-icon left color="primary">mdi-content-save</v-icon>
+            Save
           </v-btn>
         </template>
         <span> <v-icon left small>mdi-microsoft-windows</v-icon>CTRL + S</span
@@ -227,7 +229,8 @@ export default {
       dialogDelete: false,
       snackbarCopied: false,
       textDeleted: "Snippet deleted!",
-      timeout: 2000
+      timeout: 2000,
+      initialSnippetContent: ""
     };
   },
   methods: {
@@ -270,6 +273,7 @@ export default {
           this.snippet.content,
           this.snippet.lang
         );
+        this.initialSnippetContent = this.snippet.content;
         this.snackbarSaved = true;
       } else {
         //
@@ -300,6 +304,7 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this._saveListener);
+    this.initialSnippetContent = this.snippet.content;
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this._saveListener);

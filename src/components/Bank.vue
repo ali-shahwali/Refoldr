@@ -101,7 +101,6 @@
           <v-card-title class="headline">
             Settings
           </v-card-title>
-          <v-spacer></v-spacer>
           <v-btn
               class="mr-4"
               text
@@ -239,7 +238,7 @@ export default {
       this.selectedSnippet = snippet;
       for (let i = 0; i < this.Snippets.length; i++) {
         if (this.Snippets[i].id === snippet.id) {
-          Cookies.set("lastSnippet", i, { expires: 7 }); // expires in 1 week
+          Cookies.set("lastSnippet", i, { expires: 30 }); // expires in 1 month
         }
       }
     },

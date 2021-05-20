@@ -2,8 +2,8 @@
 export const supportedLangs = [
     {
         name: "HTML (markup)",
-        value: "markup",
-        avatar: require("@/assets/langs/markup.svg")
+        value: "html",
+        avatar: require("@/assets/langs/html.svg")
     },
     {
         name: "CSS",
