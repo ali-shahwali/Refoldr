@@ -80,73 +80,65 @@
       Snippet with that name already exists!
     </v-snackbar>
 
-    <v-dialog
-        v-model="dialogSettings"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-    >
+    <v-dialog width="33vw" v-model="dialogSettings" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-            dark
-            color="primary"
-        >
-          <v-btn
-              icon
-              dark
-              @click="dialogSettings = false"
-          >
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="dialogSettings = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Settings</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn
-                dark
-                text
-                @click="dialogSettings = false"
-            >
-              Save
-            </v-btn>
-          </v-toolbar-items>
         </v-toolbar>
-        <v-list
-            three-line
-            subheader
-        >
+        <v-list three-line subheader>
           <v-subheader>Preferences</v-subheader>
-          <v-list-item>
+          <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title>Set preferred language</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-        <v-list
-            three-line
-            subheader
-        >
-          <v-list-item>
-            <v-list-item-action>
-              <v-checkbox ></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Notifications</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-action>
-              <v-checkbox ></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Sound</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-action>
-              <v-checkbox></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Auto-add widgets</v-list-item-title>
+              <v-list-item-subtitle>
+                <v-autocomplete
+                  @change="savePreferences"
+                  style="max-width: 300px;"
+                  v-model="preferredLang"
+                  :items="langs"
+                  filled
+                  solo
+                  class="mt-6"
+                  label="Language"
+                  menu-props="auto"
+                  spellcheck="false"
+                  item-text="name"
+                  item-value="value"
+                >
+                  <template v-slot:selection="data">
+                    <v-avatar
+                      rounded
+                      size="small"
+                      style="height: 20px; width: 20px;"
+                      class="mr-2"
+                      left
+                    >
+                      <v-img :src="data.item.avatar"></v-img>
+                    </v-avatar>
+                    {{ data.item.name }}
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar
+                        rounded
+                        size="small"
+                        style="height: 20px; width: 20px;"
+                      >
+                        <img :src="data.item.avatar" />
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-html="data.item.name"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -156,6 +148,7 @@
 </template>
 <script>
 import { db, Timestamp } from "../firebase";
+import { supportedLangs } from "../assets/langs";
 import Snippet from "./Snippet";
 import store from "../store";
 import Cookies from "js-cookie";
@@ -174,6 +167,8 @@ export default {
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
       dialogSettings: false,
+      langs: supportedLangs,
+      preferredLang: "javascript"
     };
   },
   mounted() {
@@ -184,6 +179,9 @@ export default {
         this.selectedSnippetIndex = index;
         this.selectedSnippet = this.Snippets[this.selectedSnippetIndex];
       }
+      let prefLang = Cookies.get("preferredLang");
+      if(prefLang !== undefined)
+        this.preferredLang = prefLang;
     }, 1000);
   },
   methods: {
@@ -206,7 +204,7 @@ export default {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: "javascript",
+          lang: Cookies.get("preferredLang"),
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -217,7 +215,7 @@ export default {
           id: docRef.id,
           name: "New snippet",
           content: "",
-          lang: "javascript",
+          lang: Cookies.get("preferredLang"),
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -282,6 +280,9 @@ export default {
     getLangSvg(lang) {
       if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
       else return require("@/assets/langs/placeholder.svg");
+    },
+    savePreferences() {
+      Cookies.set("preferredLang", this.preferredLang, {expires: 90});
     }
   },
   firestore: {
