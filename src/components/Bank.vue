@@ -79,21 +79,6 @@
     >
       Snippet with that name already exists!
     </v-snackbar>
-    <v-snackbar
-      style="margin: 0 1rem 4rem 0"
-      color="success"
-      v-model="snackbarSaved"
-      :timeout="timeout"
-      right
-    >
-      Changes saved!
-
-      <template v-slot:action="{ attrs }">
-        <v-btn icon v-bind="attrs" @click="snackbarSaved = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </template>
-    </v-snackbar>
 
     <v-dialog
         v-model="dialogSettings"
@@ -188,7 +173,6 @@ export default {
       timeout: 2000,
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
-      snackbarSaved: false,
       dialogSettings: false,
     };
   },

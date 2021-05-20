@@ -52,29 +52,10 @@
         </template>
       </v-autocomplete>
       <v-spacer></v-spacer>
-      <small
-        v-if="state === 'synced'"
-        style="color: green"
-        class="mr-5"
-        >Synced*</small
-      >
-      <small
-        v-if="state === 'modified'"
-        style="color: orange"
-        class="mr-5"
-        >Modified*</small
-      >
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="updateSnippet">
-            <v-icon left color="primary">mdi-content-save</v-icon>
-            Save
-          </v-btn>
-        </template>
-        <span> <v-icon left small>mdi-microsoft-windows</v-icon>CTRL + S</span
-        ><br />
-        <span><v-icon left small>mdi-apple</v-icon>CMD + S</span>
-      </v-tooltip>
+      <v-btn v-if="pendingSave" icon disabled loading color="white"></v-btn>
+      <v-btn v-else disabled text small color="white"
+        ><v-icon left>mdi-content-save</v-icon>Saved
+      </v-btn>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" @click="copyToClipboard()" icon>
@@ -217,7 +198,7 @@
 <script>
 import Editor from "vue2-ace-editor";
 import { supportedLangs } from "../assets/langs";
-import { debounce } from 'debounce';
+import { debounce } from "debounce";
 
 export default {
   name: "Snippet",
@@ -238,9 +219,8 @@ export default {
       snackbarCopied: false,
       textDeleted: "Snippet deleted!",
       timeout: 2000,
-      initialSnippetContent: undefined,
-      initialSnippetName: undefined,
-      state: 'loading'
+      pendingSave: false,
+      state: "loading"
     };
   },
   methods: {
@@ -283,19 +263,19 @@ export default {
           this.snippet.content,
           this.snippet.lang
         );
-        this.initialSnippetContent = this.snippet.content;
-        this.snackbarSaved = true;
+        this.pendingSave = false;
       } else {
         //
       }
     },
     fieldUpdate() {
-      this.state = 'modified';
+      this.state = "modified";
+      this.pendingSave = true;
       this.debouncedUpdate();
     },
     debouncedUpdate: debounce(function() {
       this.updateSnippet();
-    }, 1500),
+    }, 1000),
     async toggleFavorite(id, bool) {
       this.$emit("onToggleFavorite", this.snippet.id, bool);
       this.snippet.isFavorited = bool;
@@ -321,16 +301,6 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this._saveListener);
-  },
-  beforeUpdate() {
-    if(this.initialSnippetContent === undefined || this.initialSnippetName === undefined) {
-      this.initialSnippetContent = this.snippet.content;
-      this.initialSnippetName = this.snippet.name;
-    }
-    else if(this.initialSnippetName !== this.snippet.name) {
-      this.initialSnippetContent = this.snippet.content;
-      this.initialSnippetName = this.snippet.name;
-    }
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this._saveListener);
