@@ -62,12 +62,31 @@
       </v-col>
       <v-col cols="9">
         <snippet
+          v-if="selectedSnippetIndex !== undefined"
           :selected-snippet-index="selectedSnippetIndex"
           :snippet="selectedSnippet"
+          :key="snippetKey"
           @onDelete="deleteSnippet"
           @onToggleFavorite="toggleFavorite"
           @onUpdate="updateSnippet"
         ></snippet>
+        <v-parallax
+            v-else
+            translate="false"
+            src="../assets/SnippetMissingBG.svg"
+            style="height: calc(100vh - 113px)"
+        >
+          <v-row align="center" justify="center">
+            <v-col class="text-center" cols="12">
+              <v-icon class="mb-4" color="primary" x-large dark
+              >mdi-code-tags</v-icon
+              >
+              <h1 style="user-select: none" class="display-1 font-weight-thin mb-4">
+                No snippet selected
+              </h1>
+            </v-col>
+          </v-row>
+        </v-parallax>
       </v-col>
     </v-row>
     <v-snackbar
@@ -168,7 +187,8 @@ export default {
       snackbarNewSnippetAlreadyExists: false,
       dialogSettings: false,
       langs: supportedLangs,
-      preferredLang: "javascript"
+      preferredLang: "javascript",
+      snippetKey: 0,
     };
   },
   mounted() {
@@ -276,6 +296,7 @@ export default {
           Cookies.set("lastSnippet", i, { expires: 30 }); // expires in 1 month
         }
       }
+      this.snippetKey += 1;
     },
     getLangSvg(lang) {
       if (lang !== null) return require(`@/assets/langs/${lang}.svg`);

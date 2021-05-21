@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar v-if="selectedSnippetIndex !== undefined">
+    <v-toolbar >
       <v-text-field
         dense
         solo
@@ -123,23 +123,7 @@
       }"
     ></editor>
 
-    <v-parallax
-      translate="false"
-      src="../assets/SnippetMissingBG.svg"
-      style="height: calc(100vh - 113px)"
-      v-else
-    >
-      <v-row align="center" justify="center">
-        <v-col class="text-center" cols="12">
-          <v-icon class="mb-4" color="primary" x-large dark
-            >mdi-code-tags</v-icon
-          >
-          <h1 style="user-select: none" class="display-1 font-weight-thin mb-4">
-            No snippet selected
-          </h1>
-        </v-col>
-      </v-row>
-    </v-parallax>
+
 
     <v-snackbar
       style="margin: 0 1rem 4rem 0"
@@ -220,7 +204,8 @@ export default {
       textDeleted: "Snippet deleted!",
       timeout: 2000,
       pendingSave: false,
-      state: "loading"
+      state: "loading",
+      firstLoad: false,
     };
   },
   methods: {
@@ -269,9 +254,14 @@ export default {
       }
     },
     fieldUpdate() {
-      this.state = "modified";
-      this.pendingSave = true;
-      this.debouncedUpdate();
+      if(!this.firstLoad) {
+        this.state = "modified";
+        this.pendingSave = true;
+        this.debouncedUpdate();
+      }
+      else {
+        this.firstLoad = false;
+      }
     },
     debouncedUpdate: debounce(function() {
       this.updateSnippet();
