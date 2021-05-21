@@ -7,7 +7,9 @@
 
     <v-footer padless>
       <v-col class="text-center" cols="12">
-        {{ new Date().getFullYear() }} — <strong>refoldr</strong> — <a href="https://discord.gg/8BFYr5eD" target="_blank">Discord</a>
+        {{ new Date().getFullYear() }} —
+        <strong>refoldr</strong> —
+        <v-btn color="#404EED" x-small href="https://discord.gg/qKEbpRupc5" target="_blank" icon><v-icon>mdi-discord</v-icon></v-btn>
       </v-col>
     </v-footer>
   </v-app>
