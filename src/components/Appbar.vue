@@ -5,7 +5,7 @@
       src="../assets/logo.svg"
     ></v-img>
     <v-toolbar-title class="mx-3">refoldr</v-toolbar-title>
-    <p style="color: #505050; user-select: none">Beta 1.3</p>
+    <p style="color: #505050; user-select: none">Beta 2.0</p>
     <v-spacer></v-spacer>
     <div v-if="user.loggedIn">
       <v-menu

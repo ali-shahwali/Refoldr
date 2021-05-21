@@ -2,6 +2,7 @@
   <div>
     <v-toolbar >
       <v-text-field
+        @input="fieldUpdate"
         dense
         solo
         class="mt-6"
@@ -12,6 +13,7 @@
         spellcheck="false"
       ></v-text-field>
       <v-autocomplete
+        @input="fieldUpdate"
         style="max-width: 300px;"
         v-model="snippet.lang"
         :items="langs"
@@ -52,7 +54,7 @@
         </template>
       </v-autocomplete>
       <v-spacer></v-spacer>
-      <v-btn v-if="pendingSave" icon disabled loading color="white"></v-btn>
+      <v-btn class="mr-2" v-if="pendingSave" icon disabled loading x-small color="white"></v-btn>
       <v-btn v-else disabled text small color="white"
         ><v-icon left>mdi-content-save</v-icon>Saved
       </v-btn>
