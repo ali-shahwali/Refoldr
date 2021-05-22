@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar >
+    <v-toolbar>
       <v-text-field
         @input="fieldUpdate"
         dense
@@ -53,11 +53,23 @@
           </template>
         </template>
       </v-autocomplete>
-      <v-spacer></v-spacer>
-      <v-btn class="mr-2" v-if="pendingSave" icon disabled loading x-small color="white"></v-btn>
-      <v-btn v-else disabled text small color="white"
+      <div class="ml-4">
+        <v-btn
+            v-if="pendingSave"
+            class="mr-2"
+            icon
+            disabled
+            loading
+            x-small
+            color="white"
+            right
+        ></v-btn>
+        <v-btn v-else disabled text small color="white"
         ><v-icon left>mdi-content-save</v-icon>Saved
-      </v-btn>
+        </v-btn>
+      </div>
+      <v-spacer></v-spacer>
+
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" @click="copyToClipboard()" icon>
@@ -93,7 +105,14 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn link :to="{ name: 'SharedSnippet', params: { id: snippet.id }}" v-bind="attrs" v-on="on" icon>
+          <v-btn
+            link
+            :to="{ name: 'SharedSnippet', params: { id: snippet.id } }"
+            v-bind="attrs"
+            v-on="on"
+            icon
+            color="primary"
+          >
             <v-icon>mdi-share</v-icon>
           </v-btn>
         </template>
@@ -212,7 +231,7 @@ export default {
       timeout: 2000,
       pendingSave: false,
       state: "loading",
-      firstLoad: false,
+      firstLoad: false
     };
   },
   methods: {
@@ -261,12 +280,11 @@ export default {
       }
     },
     fieldUpdate() {
-      if(!this.firstLoad) {
+      if (!this.firstLoad) {
         this.state = "modified";
         this.pendingSave = true;
         this.debouncedUpdate();
-      }
-      else {
+      } else {
         this.firstLoad = false;
       }
     },

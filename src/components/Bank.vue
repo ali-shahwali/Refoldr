@@ -6,12 +6,12 @@
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
               <v-row>
-                <v-col cols="10">
+                <v-col cols="11">
                   <v-btn block @click="createNewSnippet" color="primary">
                     <v-icon left>mdi-plus</v-icon> Add new
                   </v-btn>
                 </v-col>
-                <v-col cols="1">
+                <v-col class="pl-0" cols="1">
                   <v-btn @click="dialogSettings = true" icon>
                     <v-icon>mdi-cog</v-icon>
                   </v-btn>
@@ -62,7 +62,7 @@
       </v-col>
       <v-col cols="9">
         <snippet
-          v-if="selectedSnippetIndex !== undefined"
+          v-if="selectedSnippetIndex !== undefined && selectedSnippet.name !== undefined"
           :selected-snippet-index="selectedSnippetIndex"
           :snippet="selectedSnippet"
           :key="snippetKey"

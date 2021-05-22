@@ -1,27 +1,39 @@
 <template>
-  <editor
-      @init="editorInit"
-      theme="dracula"
-      :lang="lang.value"
-      v-model="snippet.content"
-      :options="{
-        useWorker: false,
-        selectionStyle: 'text',
-        enableLiveAutocompletion: true,
-        displayIndentGuides: true,
-        fontSize: '1.25rem',
-        highlightSelectedWord: true,
-        fadeFoldWidgets: true,
-        showPrintMargin: false,
-        highlightActiveLine: false,
-        readOnly: true
-      }"
-  > </editor>
+  <v-container style="height: 100%">
+    <v-row style="height: 100%">
+      <v-col cols="2"></v-col>
+      <v-col  cols="8">
+        <v-toolbar
+            class="mb-4"
+        >
+          <v-toolbar-title>{{snippet.name}} by {{user.name}}</v-toolbar-title>
+        </v-toolbar>
+        <editor
+          @init="editorInit"
+          theme="dracula"
+          :lang="lang.value"
+          v-model="snippet.content"
+          :options="{
+          useWorker: false,
+          selectionStyle: 'text',
+          displayIndentGuides: true,
+          fontSize: '1.25rem',
+          highlightSelectedWord: true,
+          fadeFoldWidgets: true,
+          showPrintMargin: false,
+          highlightActiveLine: false,
+        }"
+          style="height: 70vh"
+      > </editor></v-col>
+      <v-col cols="2"></v-col>
+
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import Editor from "vue2-ace-editor";
-import { db } from "../firebase";
+import { db, getUserByUid } from "../firebase";
 import { supportedLangs } from "../assets/langs";
 
 export default {
@@ -32,6 +44,7 @@ export default {
   data: function() {
     return {
       snippet: {},
+      user: {},
       lang: ""
     };
   },
@@ -67,6 +80,11 @@ export default {
     .get()
     .then((doc) => {
       this.snippet = doc.data();
+      getUserByUid(doc.data().uid)
+          .get()
+      .then((doc) => {
+        this.user = doc.data();
+      });
       supportedLangs.forEach(lang => {
         if(lang.value === doc.data().lang)
           this.lang = lang;
