@@ -1,39 +1,28 @@
 <template>
   <div>
-    <section id="hero">
-      <v-row no-gutters>
-        <v-img :height="'30vh'" src="../assets/welcomeBG.svg">
-          <v-theme-provider dark>
-            <v-container fill-height>
-              <v-row
-                align="center"
-                class="white--text mx-auto"
-                justify="center"
-              >
-                <v-col class="white--text text-center" cols="12" tag="h1">
-                  <br />
-
-                  <span
-                    :class="[
-                      $vuetify.breakpoint.smAndDown ? 'display-3' : 'display-4'
-                    ]"
-                    class="font-weight-black"
-                    style="user-select: none"
-                  >
-                    <code>refoldr</code>
-                  </span>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-theme-provider>
-        </v-img>
-      </v-row>
-    </section>
 
     <section id="about-me">
+    <v-row no-gutters>
+        <v-img :height="'calc(100vh - 112px)'" src="../assets/SnippetMissingBG.svg">
       <div class="py-12"></div>
 
       <v-container class="text-center">
+        <v-row align="center" class="white--text mx-auto mb-16" justify="center">
+          <v-col class="white--text text-center" cols="12" tag="h1">
+            <br />
+
+            <span
+              :class="[
+                $vuetify.breakpoint.smAndDown ? 'display-3' : 'display-4',
+              ]"
+              class="font-weight-black"
+              style="user-select: none"
+            >
+              <code>refoldr</code>
+            </span>
+          </v-col>
+        </v-row>
+
         <h2 class="display-2 font-weight-bold mb-3">
           Store your code snippets
         </h2>
@@ -57,31 +46,34 @@
         <div></div>
 
         <v-btn
-          color="primary"
+          color="indigo"
           class="mt-5"
           elevation="24"
           x-large
           @click="signIn"
-          >Continue with google </v-btn
-        >
+          ><img src="../assets/google-icon.svg" height="30px" class="mr-4" />
+          Continue with google
+        </v-btn>
       </v-container>
 
       <div class="py-12"></div>
+      </v-img>
+      </v-row>
     </section>
   </div>
 </template>
 
 <script>
 import { signInWithGoogle } from "../firebase";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "Welcome",
   computed: {
-    ...mapGetters({user: "user"})
+    ...mapGetters({ user: "user" }),
   },
   methods: {
-    signIn: signInWithGoogle
-  }
+    signIn: signInWithGoogle,
+  },
 };
 </script>
 
