@@ -7,9 +7,14 @@ const router = new Router({
   mode: "history",
   routes: [
     {
-      path: "/",
+      path: '/',
       name: "Home",
       component: () => import("./components/Home")
+    },
+    {
+      path: '/snippet/:id',
+      name: "SharedSnippet",
+      component: () => import("./components/SharedSnippet")
     }
   ]
 });

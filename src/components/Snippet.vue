@@ -93,6 +93,14 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
+          <v-btn link :to="{ name: 'SharedSnippet', params: { id: snippet.id }}" v-bind="attrs" v-on="on" icon>
+            <v-icon>mdi-share</v-icon>
+          </v-btn>
+        </template>
+        <span>Share</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" @click="dialogDelete = true" icon>
             <v-icon color="error">mdi-delete</v-icon>
           </v-btn>
@@ -103,7 +111,6 @@
 
     <editor
       @input="fieldUpdate"
-      id="editor"
       class="editor"
       v-if="selectedSnippetIndex !== undefined"
       v-model="snippet.content"
@@ -124,8 +131,6 @@
         highlightActiveLine: false
       }"
     ></editor>
-
-
 
     <v-snackbar
       style="margin: 0 1rem 4rem 0"
