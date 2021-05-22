@@ -18,7 +18,7 @@
               class="font-weight-black"
               style="user-select: none"
             >
-              <code>refoldr</code>
+              <code>Refoldr</code>
             </span>
           </v-col>
         </v-row>
@@ -39,7 +39,7 @@
           class="mx-auto title font-weight-light mb-8"
           max-width="720"
         >
-          refoldr stores your code snippets and allows for ease of use and
+          Refoldr stores your code snippets and allows for ease of use and
           access, Tired of losing your snippets? Get started today!
         </v-responsive>
 

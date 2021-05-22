@@ -55,24 +55,29 @@
       </v-autocomplete>
       <div class="ml-4">
         <v-btn
-            v-if="pendingSave"
-            class="mr-2"
-            icon
-            disabled
-            loading
-            x-small
-            color="white"
-            right
+          v-if="pendingSave"
+          class="mr-2"
+          icon
+          disabled
+          loading
+          x-small
+          color="white"
+          right
         ></v-btn>
         <v-btn v-else disabled text small color="white"
-        ><v-icon left>mdi-content-save</v-icon>Saved
+          ><v-icon left>mdi-content-save</v-icon>Saved
         </v-btn>
       </div>
       <v-spacer></v-spacer>
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="copySnippetToClipboard()" icon>
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            @click="copySnippetToClipboard()"
+            icon
+          >
             <v-icon dark>
               mdi-content-copy
             </v-icon>
@@ -106,6 +111,9 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            link
+            :to="{ name: 'SharedSnippet', params: { id: snippet.id } }"
+            target="_blank"
             v-bind="attrs"
             v-on="on"
             icon

@@ -18,7 +18,12 @@
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on" @click="copySnippetToClipboard()" icon>
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                @click="copySnippetToClipboard()"
+                icon
+              >
                 <v-icon dark>
                   mdi-content-copy
                 </v-icon>
@@ -49,10 +54,10 @@
       <v-col cols="2"></v-col>
     </v-row>
     <v-snackbar
-        style="margin: 0 0 4rem 0"
-        color="primary"
-        v-model="snackbarCopied"
-        :timeout="timeout"
+      style="margin: 0 0 4rem 0"
+      color="primary"
+      v-model="snackbarCopied"
+      :timeout="timeout"
     >
       Copied to clipboard!
       <template v-slot:action="{ attrs }">
@@ -116,7 +121,7 @@ export default {
       document.execCommand("copy");
       document.body.removeChild(dummy);
       this.snackbarCopied = true;
-    },
+    }
   },
   async created() {
     await db
