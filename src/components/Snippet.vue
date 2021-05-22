@@ -306,7 +306,7 @@ export default {
     copyShareLinkToClipboard() {
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
-      dummy.value = "https://www.refoldr.com/snippet/" + this.snippet.uid;
+      dummy.value = "https://www.refoldr.com/snippet/" + this.snippet.id;
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);

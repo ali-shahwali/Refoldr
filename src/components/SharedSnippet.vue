@@ -127,8 +127,8 @@ export default {
         this.snippet = doc.data();
         getUserByUid(doc.data().uid)
           .get()
-          .then(doc => {
-            this.user = doc.data();
+          .then(docRef => {
+            this.user = docRef.data();
           });
         supportedLangs.forEach(lang => {
           if (lang.value === doc.data().lang) this.lang = lang;
