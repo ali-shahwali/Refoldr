@@ -1,11 +1,12 @@
 <template>
   <v-app-bar  app elevation="0" style="border-bottom: 1px solid #414141"> 
+    <v-btn class="text-none" link to="/" :ripple="false" depressed plain text>
     <v-img
       max-width="25"
       src="../assets/logo.svg"
     ></v-img>
-    <v-toolbar-title class="mx-3">refoldr</v-toolbar-title>
-    <p style="color: #505050; user-select: none">Beta 2.0</p>
+    <v-toolbar-title class="mx-3">Refoldr</v-toolbar-title>
+    </v-btn>
     <v-spacer></v-spacer>
     <div v-if="user.loggedIn">
       <v-menu

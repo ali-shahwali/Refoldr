@@ -72,7 +72,7 @@
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="copyToClipboard()" icon>
+          <v-btn v-bind="attrs" v-on="on" @click="copySnippetToClipboard()" icon>
             <v-icon dark>
               mdi-content-copy
             </v-icon>
@@ -106,12 +106,11 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            link
-            :to="{ name: 'SharedSnippet', params: { id: snippet.id } }"
             v-bind="attrs"
             v-on="on"
             icon
             color="primary"
+            @click="copyShareLinkToClipboard()"
           >
             <v-icon>mdi-share</v-icon>
           </v-btn>
@@ -295,10 +294,19 @@ export default {
       this.$emit("onToggleFavorite", this.snippet.id, bool);
       this.snippet.isFavorited = bool;
     },
-    copyToClipboard() {
+    copySnippetToClipboard() {
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
       dummy.value = this.snippet.content;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      this.snackbarCopied = true;
+    },
+    copyShareLinkToClipboard() {
+      let dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = "https://www.refoldr.com/snippet/" + this.snippet.uid;
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);

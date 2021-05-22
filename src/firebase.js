@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
+import 'firebase/analytics'
 import store from "./store";
 
 // Your web app's Firebase configuration
@@ -46,6 +47,8 @@ export const getUserByUid = (uid) => {
         .collection("users")
         .doc(uid);
 }
+
+export const analytics = firebase.analytics();
 
 
 

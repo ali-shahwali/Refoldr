@@ -8,8 +8,8 @@
     <v-footer padless>
       <v-col class="text-center" cols="12">
         {{ new Date().getFullYear() }} —
-        <strong>refoldr</strong> —
-        <v-btn color="#404EED" x-small href="https://discord.gg/qKEbpRupc5" target="_blank" icon><v-icon>mdi-discord</v-icon></v-btn>
+        <strong>Refoldr</strong> --
+        <v-btn disabled color="#404EED" x-small href="https://discord.gg/qKEbpRupc5" target="_blank" icon><v-icon>mdi-discord</v-icon></v-btn>
       </v-col>
     </v-footer>
   </v-app>
@@ -31,13 +31,13 @@ export default {
 
 <style>
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   background-color: #1c1c1c;
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
+  height: 10px;
   background-color: #1c1c1c;
 }
 html {
@@ -46,7 +46,6 @@ html {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #555;
+  background-color: #2e2e2e;
 }
 </style>
