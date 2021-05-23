@@ -115,7 +115,7 @@
               <v-list-item-title>Set preferred language</v-list-item-title>
               <v-list-item-subtitle>
                 <v-autocomplete
-                  @change="savePreferences"
+                  @change="Cookies.set('preferredLang', preferredLang, {expires: 90})"
                   style="max-width: 300px;"
                   v-model="preferredLang"
                   :items="langs"
@@ -202,6 +202,8 @@ export default {
       let prefLang = Cookies.get("preferredLang");
       if(prefLang !== undefined)
         this.preferredLang = prefLang;
+      else
+        Cookies.set("preferredLang", "javascript", {expires: 90})
     }, 1000);
   },
   methods: {
@@ -223,7 +225,7 @@ export default {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: Cookies.get("preferredLang") === undefined ? "javascript" : Cookies.get("preferredLang"),
+          lang: Cookies.get("preferredLang"),
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
