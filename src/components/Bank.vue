@@ -220,11 +220,10 @@ export default {
         .get();
 
       if (newSnippet.empty === true) {
-        console.log("create new snippet");
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: Cookies.get("preferredLang"),
+          lang: Cookies.get("preferredLang") === undefined ? "javascript" : Cookies.get("preferredLang"),
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
