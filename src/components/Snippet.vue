@@ -61,7 +61,6 @@
           disabled
           loading
           x-small
-          color="white"
           right
         ></v-btn>
         <v-btn v-else disabled text small color="white"

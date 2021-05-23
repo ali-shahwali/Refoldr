@@ -7,17 +7,29 @@ const router = new Router({
   mode: "history",
   routes: [
     {
-      path: '/',
+      path: "/",
       name: "Home",
       component: () => import("./components/Home")
     },
     {
-      path: '/snippet/:id',
+      path: "/snippet/:id",
       name: "SharedSnippet",
       component: () => import("./components/SharedSnippet")
+    },
+    {
+      path: "/not_found",
+      name: "NotFound",
+      component: () => import("./components/NotFound")
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "Home",
+      redirect: "/",
+      component: () => import("./components/Home")
     }
   ]
 });
+
 
 
 export default router

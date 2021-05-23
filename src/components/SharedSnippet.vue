@@ -130,14 +130,19 @@ export default {
       .get()
       .then(doc => {
         this.snippet = doc.data();
-        getUserByUid(doc.data().uid)
-          .get()
-          .then(docRef => {
-            this.user = docRef.data();
+        if(this.snippet === undefined) {
+          this.$router.push('/not_found');
+        }
+        else {
+          getUserByUid(doc.data().uid)
+              .get()
+              .then(docRef => {
+                this.user = docRef.data();
+              });
+          supportedLangs.forEach(lang => {
+            if (lang.value === doc.data().lang) this.lang = lang;
           });
-        supportedLangs.forEach(lang => {
-          if (lang.value === doc.data().lang) this.lang = lang;
-        });
+        }
       });
   }
 };

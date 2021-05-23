@@ -19,7 +19,7 @@
               </v-row>
             </div>
             <v-divider></v-divider>
-            <template v-for="(snippet, index) in Snippets">
+            <template v-for="(snippet, index) in snippets">
               <v-list-item
                 id="listItem"
                 @click="selectSnippet(snippet)"
@@ -53,7 +53,7 @@
                 </template>
               </v-list-item>
               <v-divider
-                v-if="index < Snippets.length - 1"
+                v-if="index < snippets.length - 1"
                 :key="index"
               ></v-divider>
             </template>
@@ -115,7 +115,7 @@
               <v-list-item-title>Set preferred language</v-list-item-title>
               <v-list-item-subtitle>
                 <v-autocomplete
-                  @change="Cookies.set('preferredLang', preferredLang, {expires: 90})"
+                  @change="setPreferences()"
                   style="max-width: 300px;"
                   v-model="preferredLang"
                   :items="langs"
@@ -179,9 +179,9 @@ export default {
   },
   data: function() {
     return {
-      Snippets: [],
-      selectedSnippetIndex: {},
-      selectedSnippet: [],
+      snippets: [],
+      selectedSnippetIndex: undefined,
+      selectedSnippet: {},
       timeout: 2000,
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
@@ -197,7 +197,7 @@ export default {
       let index = parseInt(Cookies.get("lastSnippet"));
       if (index !== undefined) {
         this.selectedSnippetIndex = index;
-        this.selectedSnippet = this.Snippets[this.selectedSnippetIndex];
+        this.selectedSnippet = this.snippets[this.selectedSnippetIndex];
       }
       let prefLang = Cookies.get("preferredLang");
       if(prefLang !== undefined)
@@ -231,7 +231,7 @@ export default {
           uid: store.state.user.data.id
         });
 
-        this.selectedSnippetIndex = this.Snippets.length - 1;
+        this.selectedSnippetIndex = this.snippets.length - 1;
         this.selectSnippet({
           id: docRef.id,
           name: "New snippet",
@@ -243,10 +243,10 @@ export default {
         });
       } else {
         // send user to the existing blank snippet
-        for (let i = 0; i < this.Snippets.length; i++) {
-          if (this.Snippets[i].name === "New snippet") {
+        for (let i = 0; i < this.snippets.length; i++) {
+          if (this.snippets[i].name === "New snippet") {
             this.selectedSnippetIndex = i;
-            this.selectSnippet(this.Snippets[i]);
+            this.selectSnippet(this.snippets[i]);
             break;
           } else {
             i++;
@@ -276,7 +276,6 @@ export default {
             content: content,
             lang: lang
           });
-        this.snackbarSaved = true;
       } else {
         this.snackbarAlreadyExists = true;
       }
@@ -288,12 +287,12 @@ export default {
         .delete();
 
       this.selectedSnippetIndex = undefined;
-      this.selectSnippet(undefined);
+      this.selectSnippet({});
     },
     selectSnippet(snippet) {
       this.selectedSnippet = snippet;
-      for (let i = 0; i < this.Snippets.length; i++) {
-        if (this.Snippets[i].id === snippet.id) {
+      for (let i = 0; i < this.snippets.length; i++) {
+        if (this.snippets[i].id === snippet.id) {
           Cookies.set("lastSnippet", i, { expires: 30 }); // expires in 1 month
         }
       }
@@ -303,12 +302,12 @@ export default {
       if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
       else return require("@/assets/langs/placeholder.svg");
     },
-    savePreferences() {
-      Cookies.set("preferredLang", this.preferredLang, {expires: 90});
+    setPreferences() {
+      Cookies.set('preferredLang', this.preferredLang, {expires: 90});
     }
   },
   firestore: {
-    Snippets: db
+    snippets: db
       .collection("snippets")
       .where("uid", "==", store.state.user.data.id)
       .orderBy("isFavorited", "desc")
