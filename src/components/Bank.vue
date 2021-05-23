@@ -180,7 +180,7 @@ export default {
   data: function() {
     return {
       Snippets: [],
-      selectedSnippetIndex: undefined,
+      selectedSnippetIndex: {},
       selectedSnippet: [],
       timeout: 2000,
       snackbarAlreadyExists: false,
