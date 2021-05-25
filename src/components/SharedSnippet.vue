@@ -98,6 +98,7 @@ export default {
       require("brace/mode/csharp");
       require("brace/mode/haskell");
       require("brace/mode/elixir");
+      require("brace/mode/erlang");
       require("brace/mode/rust");
       require("brace/mode/r");
       require("brace/mode/css");
@@ -111,6 +112,11 @@ export default {
       require("brace/mode/mysql");
       require("brace/mode/sqlserver");
       require("brace/mode/matlab");
+      require("brace/mode/ruby");
+      require("brace/mode/kotlin");
+      require("brace/mode/ocaml");
+      require("brace/mode/dart");
+      require("brace/mode/perl");
       require("brace/theme/dracula");
     },
     copySnippetToClipboard() {
