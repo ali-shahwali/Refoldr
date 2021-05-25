@@ -36,6 +36,11 @@ export const supportedLangs = [
         avatar: require("@/assets/langs/elixir.svg")
     },
     {
+        name: "Erlang",
+        value: "erlang",
+        avatar: require("@/assets/langs/erlang.svg")
+    },
+    {
         name: "Python",
         value: "python",
         avatar: require("@/assets/langs/python.svg")
@@ -49,6 +54,11 @@ export const supportedLangs = [
         name: "Java",
         value: "java",
         avatar: require("@/assets/langs/java.svg")
+    },
+    {
+        name: "Kotlin",
+        value: "kotlin",
+        avatar: require("@/assets/langs/kotlin.svg")
     },
     {
         name: "Haskell",
@@ -95,5 +105,25 @@ export const supportedLangs = [
         name: "MATLAB",
         value: "matlab",
         avatar: require("@/assets/langs/matlab.svg")
-    }
+    },
+    {
+        name: "Ruby",
+        value: "ruby",
+        avatar: require("@/assets/langs/ruby.svg")
+    },
+    {
+        name: "OCaml",
+        value: "ocaml",
+        avatar: require("@/assets/langs/ocaml.svg")
+    },
+    {
+        name: "Dart",
+        value: "dart",
+        avatar: require("@/assets/langs/dart.svg")
+    },
+    {
+        name: "Perl",
+        value: "perl",
+        avatar: require("@/assets/langs/perl.svg")
+    },
 ];
