@@ -142,7 +142,7 @@
       :lang="snippet.lang"
       theme="dracula"
       width="100%"
-      height="calc(100vh - 176px)"
+      height="calc(100vh - 177px)"
       :options="{
         useWorker: false,
         selectionStyle: 'text',

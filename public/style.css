@@ -1,0 +1,12 @@
+.theme--dark.v-list {
+    background: #282A36 !important;
+}
+
+.v-sheet.v-footer {
+    background: #282A36 !important;
+    border-top: 1px solid rgb(57, 57, 57) !important;
+}
+
+.theme--dark.v-toolbar.v-sheet {
+    background: #282A36 !important;
+}
