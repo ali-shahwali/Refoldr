@@ -284,6 +284,14 @@ export default {
             lang: lang
           });
       } else {
+        // we can still update content and lang!
+        await db
+            .collection("snippets")
+            .doc(id)
+            .update({
+              content: content,
+              lang: lang
+            });
         this.snackbarAlreadyExists = true;
       }
     },
