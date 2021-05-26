@@ -88,16 +88,15 @@ import { supportedLangs } from "../assets/langs";
 
 export default {
   name: "SharedSnippet",
-  metaInfo() {
-    return {
+  metaInfo: {
       title: "Refoldr | Shared snippet",
       meta: [
         {
+          hid: 'description',
           name: 'description',
           content: 'desc content'
         }
-      ]
-    }
+      ],
   },
   components: {
     editor: Editor
