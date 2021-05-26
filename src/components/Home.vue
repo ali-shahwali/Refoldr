@@ -10,7 +10,13 @@ import {mapGetters} from "vuex";
 export default {
   name: "Home",
   metaInfo: {
-    title: "Refoldr"
+    title: "Refoldr",
+    meta: [
+      {
+        vmid: 'description',
+        name: 'description',
+        content: 'Store your code snippets!',
+      }]
   },
   computed: {
     ...mapGetters({user: "user"})

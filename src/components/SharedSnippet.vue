@@ -96,9 +96,14 @@ export default {
   metaInfo() {
     return {
       title: "Refoldr | Shared snippet",
-      meta: [{       vmid: 'description',
-        name: "description", content: `${this.snippet.name} by ${this.user.name}`}]
-    }
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: `${this.snippet.name} by ${this.user.name}`,
+        }
+      ],
+    };
   },
   components: {
     editor: Editor

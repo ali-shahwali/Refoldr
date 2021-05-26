@@ -22,7 +22,14 @@
 export default {
   name: "NotFound",
   metaInfo: {
-    title: "Refoldr | 404 Not found"
+    title: "Refoldr | 404 Not found",
+    meta: [
+      {
+        vmid: 'description',
+        name: 'description',
+        content: "The page you are looking for doesn't exist",
+      }
+    ]
   }
 }
 </script>
