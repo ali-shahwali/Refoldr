@@ -126,4 +126,9 @@ export const supportedLangs = [
         value: "perl",
         avatar: require("@/assets/langs/perl.svg")
     },
+    {
+        name: "Julia",
+        value: "julia",
+        avatar: require("@/assets/langs/julia.svg")
+    },
 ];

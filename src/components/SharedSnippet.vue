@@ -47,10 +47,22 @@
             showPrintMargin: false,
             highlightActiveLine: false
           }"
-          style="height: 70vh; border-radius: 7px"
+          style="height: 67vh; border-radius: 7px"
         >
-        </editor
-      ></v-col>
+        </editor>
+        <v-text-field
+          append-icon="mdi-content-copy"
+          rounded
+          solo
+          class="mt-2"
+          @focus="$event.target.select()"
+          readonly
+          autofocus
+          label="Link"
+          v-model="link"
+          @click:append="copyLink"
+        />
+      </v-col>
       <v-col cols="2"></v-col>
     </v-row>
     <v-snackbar
@@ -76,6 +88,9 @@ import { supportedLangs } from "../assets/langs";
 
 export default {
   name: "SharedSnippet",
+  metaInfo: {
+    title: "Refoldr | Shared snippet",
+  },
   components: {
     editor: Editor
   },
@@ -83,6 +98,7 @@ export default {
     return {
       snippet: {},
       user: {},
+      link: "",
       lang: "",
       snackbarCopied: false,
       timeout: 2000
@@ -117,12 +133,22 @@ export default {
       require("brace/mode/ocaml");
       require("brace/mode/dart");
       require("brace/mode/perl");
+      require("brace/mode/julia");
       require("brace/theme/dracula");
     },
     copySnippetToClipboard() {
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
       dummy.value = this.snippet.content;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      this.snackbarCopied = true;
+    },
+    copyLink() {
+      let dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = this.link;
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
@@ -136,15 +162,15 @@ export default {
       .get()
       .then(doc => {
         this.snippet = doc.data();
-        if(this.snippet === undefined) {
-          this.$router.push('/not_found');
-        }
-        else {
+        if (this.snippet === undefined) {
+          this.$router.push("/not_found");
+        } else {
+          this.link = `https://refoldr.com/snippet/${doc.id}`;
           getUserByUid(doc.data().uid)
-              .get()
-              .then(docRef => {
-                this.user = docRef.data();
-              });
+            .get()
+            .then(docRef => {
+              this.user = docRef.data();
+            });
           supportedLangs.forEach(lang => {
             if (lang.value === doc.data().lang) this.lang = lang;
           });

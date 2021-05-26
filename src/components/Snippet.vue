@@ -117,7 +117,6 @@
             v-on="on"
             icon
             color="primary"
-            @click="copyShareLinkToClipboard()"
           >
             <v-icon>mdi-share</v-icon>
           </v-btn>
@@ -148,12 +147,11 @@
         useWorker: false,
         selectionStyle: 'text',
         enableLiveAutocompletion: true,
-        displayIndentGuides: true,
-        fontSize: '1.25rem',
+        fontSize: '1.15rem',
         highlightSelectedWord: true,
         fadeFoldWidgets: true,
         showPrintMargin: false,
-        highlightActiveLine: false
+        highlightActiveLine: false,
       }"
     ></editor>
 
@@ -269,6 +267,7 @@ export default {
       require("brace/mode/ocaml");
       require("brace/mode/dart");
       require("brace/mode/perl");
+      require("brace/mode/julia");
       require("brace/theme/dracula");
     },
     deleteSnippet() {
@@ -311,15 +310,6 @@ export default {
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
       dummy.value = this.snippet.content;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-      this.snackbarCopied = true;
-    },
-    copyShareLinkToClipboard() {
-      let dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.value = "https://www.refoldr.com/snippet/" + this.snippet.id;
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
