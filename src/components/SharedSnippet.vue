@@ -92,7 +92,6 @@ export default {
       title: "Refoldr | Shared snippet",
       meta: [
         {
-          hid: 'description',
           name: 'description',
           content: 'desc content'
         }
