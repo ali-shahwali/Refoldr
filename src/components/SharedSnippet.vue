@@ -13,7 +13,12 @@
               ><img :src="lang.avatar"/></v-avatar
             >{{ snippet.name }}</v-toolbar-title
           >
-          <v-subheader>by {{ user.name }}</v-subheader>
+          <v-subheader>
+            <v-avatar style="height: 30px; width: 30px">
+              <img :src="user.photoURL" />
+            </v-avatar>
+            {{ user.name }}</v-subheader
+          >
           <v-spacer></v-spacer>
 
           <v-tooltip bottom>
@@ -88,14 +93,12 @@ import { supportedLangs } from "../assets/langs";
 
 export default {
   name: "SharedSnippet",
-  metaInfo: {
+  metaInfo() {
+    return {
       title: "Refoldr | Shared snippet",
-      meta: [
-        {
-          name: 'description',
-          content: 'desc content'
-        }
-      ],
+      meta: [{       vmid: 'description',
+        name: "description", content: `${this.snippet.name} by ${this.user.name}`}]
+    }
   },
   components: {
     editor: Editor

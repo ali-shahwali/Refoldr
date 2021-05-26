@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import 'firebase/analytics'
+import "firebase/analytics";
 import store from "./store";
 
 // Your web app's Firebase configuration
@@ -38,15 +38,14 @@ auth.onAuthStateChanged(user => {
     .set({
       name: user.displayName,
       email: user.email,
-      lastAuthChange: Timestamp.now()
+      lastAuthChange: Timestamp.now(),
+      photoURL: user.photoURL
     });
 });
 
-export const getUserByUid = (uid) => {
-    return db
-        .collection("users")
-        .doc(uid);
-}
+export const getUserByUid = uid => {
+  return db.collection("users").doc(uid);
+};
 
 export const analytics = firebase.analytics();
 
