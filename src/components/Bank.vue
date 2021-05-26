@@ -26,20 +26,13 @@
                 :key="snippet.id"
               >
                 <template>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item-avatar
-                        size="small"
-                        v-bind="attrs"
-                        v-on="on"
-                        rounded
-                        style="height: 20px; width: 20px;"
-                      >
-                        <img :src="getLangSvg(snippet.lang)" />
-                      </v-list-item-avatar>
-                    </template>
-                    <span>{{ snippet.lang }}</span>
-                  </v-tooltip>
+                  <v-list-item-avatar
+                    size="small"
+                    rounded
+                    style="height: 20px; width: 20px;"
+                  >
+                    <img :src="getLangSvg(snippet.lang)" />
+                  </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
                       v-text="snippet.name"
@@ -62,7 +55,10 @@
       </v-col>
       <v-col cols="9">
         <snippet
-          v-if="selectedSnippetIndex !== undefined && selectedSnippet.name !== undefined"
+          v-if="
+            selectedSnippetIndex !== undefined &&
+              selectedSnippet.name !== undefined
+          "
           :selected-snippet-index="selectedSnippetIndex"
           :snippet="selectedSnippet"
           :key="snippetKey"
@@ -71,17 +67,20 @@
           @onUpdate="updateSnippet"
         ></snippet>
         <v-parallax
-            v-else
-            translate="false"
-            src="../assets/SnippetMissingBG.svg"
-            style="height: calc(100vh - 113px)"
+          v-else
+          translate="false"
+          src="../assets/SnippetMissingBG.svg"
+          style="height: calc(100vh - 113px)"
         >
           <v-row align="center" justify="center">
             <v-col class="text-center" cols="12">
               <v-icon class="mb-4" color="primary" x-large dark
-              >mdi-code-tags</v-icon
+                >mdi-code-tags</v-icon
               >
-              <h1 style="user-select: none" class="display-1 font-weight-thin mb-4">
+              <h1
+                style="user-select: none"
+                class="display-1 font-weight-thin mb-4"
+              >
                 No snippet selected
               </h1>
             </v-col>
@@ -99,7 +98,11 @@
       Snippet with that name already exists!
     </v-snackbar>
 
-    <v-dialog width="33vw" v-model="dialogSettings" transition="dialog-bottom-transition">
+    <v-dialog
+      width="33vw"
+      v-model="dialogSettings"
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="dialogSettings = false">
@@ -188,22 +191,28 @@ export default {
       dialogSettings: false,
       langs: supportedLangs,
       preferredLang: "javascript",
-      snippetKey: 0,
+      snippetKey: 0
     };
   },
   mounted() {
     // on after page load
+    let prefLang = Cookies.get("preferredLang");
+    if (prefLang !== undefined) this.preferredLang = prefLang;
+    else Cookies.set("preferredLang", "javascript", { expires: 90 });
+
+    let index = parseInt(Cookies.get("lastSnippet"));
+    if (index !== undefined) {
+      this.selectedSnippetIndex = index;
+    }
+
     setTimeout(() => {
-      let index = parseInt(Cookies.get("lastSnippet"));
-      if (index !== undefined) {
-        this.selectedSnippetIndex = index;
-        this.selectedSnippet = this.snippets[this.selectedSnippetIndex];
+      this.selectedSnippet = this.snippets[index];
+
+      // if servers are slow e.t.c set to default values
+      if (this.selectedSnippet === undefined) {
+        this.selectedSnippet = {};
+        this.selectedSnippetIndex = undefined;
       }
-      let prefLang = Cookies.get("preferredLang");
-      if(prefLang !== undefined)
-        this.preferredLang = prefLang;
-      else
-        Cookies.set("preferredLang", "javascript", {expires: 90})
     }, 1000);
   },
   methods: {
@@ -248,8 +257,6 @@ export default {
             this.selectedSnippetIndex = i;
             this.selectSnippet(this.snippets[i]);
             break;
-          } else {
-            i++;
           }
         }
       }
@@ -303,7 +310,7 @@ export default {
       else return require("@/assets/langs/placeholder.svg");
     },
     setPreferences() {
-      Cookies.set('preferredLang', this.preferredLang, {expires: 90});
+      Cookies.set("preferredLang", this.preferredLang, { expires: 90 });
     }
   },
   firestore: {
