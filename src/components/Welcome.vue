@@ -23,7 +23,7 @@
           </v-col>
         </v-row>
 
-        <h2 class="display-2 font-weight-bold mb-3">
+        <h2 class="display-2 white--text font-weight-bold mb-3">
           Store your code snippets
         </h2>
 
@@ -36,7 +36,7 @@
         </v-responsive>
 
         <v-responsive
-          class="mx-auto title font-weight-light mb-8"
+          class="mx-auto white--text title font-weight-light mb-8"
           max-width="720"
         >
           Refoldr stores your code snippets and allows for ease of use and
@@ -47,7 +47,7 @@
 
         <v-btn
           color="indigo"
-          class="mt-5"
+          class="mt-5 white--text"
           elevation="24"
           x-large
           @click="signIn"
