@@ -63,6 +63,7 @@
           x-small
           right
         ></v-btn>
+        
         <v-btn v-else disabled text small color="white"
           ><v-icon left>mdi-content-save</v-icon>Saved
         </v-btn>
@@ -142,7 +143,7 @@
       :lang="snippet.lang"
       theme="dracula"
       width="100%"
-      height="calc(100vh - 177px)"
+      height="calc(100vh - 176px)"
       :options="{
         useWorker: false,
         selectionStyle: 'text',

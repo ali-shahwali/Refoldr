@@ -29,6 +29,10 @@ export default {
 </script>
 
 <style>
+#app {
+    background-color: var(--v-background-base) !important;
+}
+
 ::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: #1c1c1c;
