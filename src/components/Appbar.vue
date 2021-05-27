@@ -1,16 +1,20 @@
 <template>
-  <v-app-bar app elevation="0" style="border-bottom: 1px solid #414141">
+  <v-app-bar app flat outlined>
     <v-btn class="text-none" link to="/" :ripple="false" depressed plain text>
       <v-img max-width="25" src="../assets/logo.svg"></v-img>
       <v-toolbar-title class="mx-3">Refoldr</v-toolbar-title>
     </v-btn>
     <v-spacer></v-spacer>
     <v-switch
-              class="mt-6 mr-2"
-                v-model="$vuetify.theme.dark"
-                inset
-                persistent-hint
-              ></v-switch>
+      :ripple="false"
+      :prepend-icon="switchIcon"
+      class="mt-6 mr-2"
+      :input-value="switchBool"
+      inset
+      persistent-hint
+      color="primary"
+      @change="changeTheme"
+    ></v-switch>
     <div v-if="user.loggedIn">
       <v-menu bottom min-width="200px" rounded offset-y>
         <template v-slot:activator="{ on }">
@@ -45,18 +49,47 @@
 
 <script>
 import { signInWithGoogle, auth } from "../firebase";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
+
 export default {
   name: "Appbar",
   computed: {
     ...mapGetters({ user: "user" }),
+    ...mapGetters({ theme: "theme" })
+  },
+  data: function() {
+    return {
+      switchIcon: "",
+      switchBool: undefined
+    };
   },
   methods: {
     signOut() {
       auth.signOut();
     },
     signIn: signInWithGoogle,
+    changeTheme() {
+      this.switchBool = !this.switchBool;
+
+      this.setSiteTheme(this.switchBool);
+
+      if (this.switchBool) this.setEditorTheme("dracula");
+      else this.setEditorTheme("chrome");
+
+      this.$vuetify.theme.dark = this.switchBool;
+
+      if (this.switchBool) this.switchIcon = "mdi-moon-waning-crescent";
+      else this.switchIcon = "mdi-white-balance-sunny";
+    },
+    ...mapMutations({ setSiteTheme: "SET_THEME" }),
+    ...mapMutations({ setEditorTheme: "SET_EDITOR_THEME" })
   },
+  beforeMount() {
+    this.switchBool = this.theme.dark;
+    this.switchIcon = this.theme.dark
+      ? "mdi-moon-waning-crescent"
+      : "mdi-weather-sunny";
+  }
 };
 </script>
 

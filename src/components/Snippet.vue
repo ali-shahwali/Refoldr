@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar>
+    <v-toolbar flat height="76px">
       <v-text-field
         @input="fieldUpdate"
         dense
@@ -63,13 +63,12 @@
           x-small
           right
         ></v-btn>
-        
+
         <v-btn v-else disabled text small color="white"
           ><v-icon left>mdi-content-save</v-icon>Saved
         </v-btn>
       </div>
       <v-spacer></v-spacer>
-
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -141,9 +140,9 @@
       v-model="snippet.content"
       @init="editorInit"
       :lang="snippet.lang"
-      theme="dracula"
+      :theme="theme"
       width="100%"
-      height="calc(100vh - 176px)"
+      height="calc(100vh - 188px)"
       :options="{
         useWorker: false,
         selectionStyle: 'text',
@@ -152,7 +151,7 @@
         highlightSelectedWord: true,
         fadeFoldWidgets: true,
         showPrintMargin: false,
-        highlightActiveLine: false,
+        highlightActiveLine: false
       }"
     ></editor>
 
@@ -208,17 +207,31 @@
       </v-card>
     </v-dialog>
   </div>
+
+
 </template>
 
 <script>
 import Editor from "vue2-ace-editor";
 import { supportedLangs } from "../assets/langs";
+import store from "../store";
 import { debounce } from "debounce";
 
 export default {
   name: "Snippet",
   components: {
     editor: Editor
+  },
+  computed: {
+    editorTheme() {
+      return store.state.theme.editorTheme;
+    }
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    editorTheme(newTheme, oldTheme) {
+      this.theme = newTheme;
+    }
   },
   props: {
     snippet: {},
@@ -229,6 +242,7 @@ export default {
       langs: supportedLangs,
       lineNumbers: true,
       readonly: false,
+      theme: "",
       snackbarDeleted: false,
       dialogDelete: false,
       snackbarCopied: false,
@@ -269,6 +283,7 @@ export default {
       require("brace/mode/dart");
       require("brace/mode/perl");
       require("brace/mode/julia");
+      require("brace/theme/chrome");
       require("brace/theme/dracula");
     },
     deleteSnippet() {
@@ -328,6 +343,7 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this._saveListener);
+    this.theme = store.state.theme.editorTheme;
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this._saveListener);

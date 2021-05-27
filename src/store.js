@@ -10,11 +10,18 @@ const store = new Vuex.Store({
     user: {
       loggedIn: false,
       data: null
+    },
+    theme: {
+      dark: false,
+      editorTheme: "chrome"
     }
   },
   getters: {
     user(state) {
       return state.user;
+    },
+    theme(state) {
+      return state.theme;
     }
   },
   mutations: {
@@ -23,6 +30,12 @@ const store = new Vuex.Store({
     },
     SET_USER(state, data) {
       state.user.data = data;
+    },
+    SET_THEME(state, value) {
+      state.theme.dark = value;
+    },
+    SET_EDITOR_THEME(state, data) {
+      state.theme.editorTheme = data;
     }
   },
   actions: {

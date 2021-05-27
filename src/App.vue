@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app">
+  <v-app id="app" >
     <appbar/>
     <v-main>
       <router-view></router-view>
@@ -16,6 +16,7 @@
 
 <script>
 import Appbar from "./components/Appbar";
+
 export default {
   name: "App",
   components: {
@@ -23,25 +24,21 @@ export default {
   },
   data: () => ({
   }),
-  methods: {
-  },
+
 };
 </script>
 
 <style>
-#app {
-    background-color: var(--v-background-base) !important;
-}
 
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: #1c1c1c;
+  background-color: rgba(0,0,0,0);
 }
 
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-  background-color: #1c1c1c;
+  background-color: rgba(0,0,0,0);
 }
 html {
   overflow-y: auto !important;
@@ -49,6 +46,6 @@ html {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: #2e2e2e;
+  background-color: #2196F3;
 }
 </style>

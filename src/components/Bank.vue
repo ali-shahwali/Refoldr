@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row no-gutters>
-      <v-col cols="3" style="border-right: 1px solid #393939;">
+      <v-col cols="3" >
         <v-list two-line style="height: calc(100vh - 112px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib/framework";
+import store from "../store";
 
 Vue.use(Vuetify);
 
@@ -32,6 +33,6 @@ export default new Vuetify({
         warning: '#FB8C00'
       },
     },
-    dark: true,
+    dark: store.state.theme.dark,
   }
 });
