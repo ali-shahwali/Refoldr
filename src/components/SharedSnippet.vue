@@ -39,7 +39,7 @@
         </v-toolbar>
         <editor
           @init="editorInit"
-          theme="dracula"
+          :theme="theme"
           :lang="lang.value"
           v-model="snippet.content"
           :options="{
@@ -52,7 +52,7 @@
             showPrintMargin: false,
             highlightActiveLine: false
           }"
-          style="height: 67vh; border-radius: 7px"
+          style="height: 66vh; border-radius: 7px;"
         >
         </editor>
         <v-text-field
@@ -90,6 +90,7 @@
 import Editor from "vue2-ace-editor";
 import { db, getUserByUid } from "../firebase";
 import { supportedLangs } from "../assets/langs";
+import store from "../store";
 
 export default {
   name: "SharedSnippet",
@@ -106,7 +107,18 @@ export default {
     };
   },
   components: {
-    editor: Editor
+    editor: Editor,
+  },
+  computed: {
+    editorTheme() {
+      return store.state.theme.editorTheme;
+    }
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    editorTheme(newTheme, oldTheme) {
+      this.theme = newTheme;
+    }
   },
   data: function() {
     return {
@@ -114,6 +126,7 @@ export default {
       user: {},
       link: "",
       lang: "",
+      theme: "",
       snackbarCopied: false,
       timeout: 2000
     };
@@ -149,6 +162,7 @@ export default {
       require("brace/mode/perl");
       require("brace/mode/julia");
       require("brace/theme/dracula");
+      require("brace/theme/chrome");
     },
     copySnippetToClipboard() {
       let dummy = document.createElement("textarea");
@@ -190,6 +204,9 @@ export default {
           });
         }
       });
+  },
+  mounted() {
+    this.theme = store.state.theme.editorTheme;
   }
 };
 </script>
