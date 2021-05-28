@@ -14,6 +14,9 @@ const store = new Vuex.Store({
     theme: {
       dark: false,
       editorTheme: "chrome"
+    },
+    editorSettings: {
+      preferredLang: "javascript"
     }
   },
   getters: {
@@ -22,6 +25,9 @@ const store = new Vuex.Store({
     },
     theme(state) {
       return state.theme;
+    },
+    editorSettings(state) {
+      return state.editorSettings;
     }
   },
   mutations: {
@@ -36,6 +42,9 @@ const store = new Vuex.Store({
     },
     SET_EDITOR_THEME(state, data) {
       state.theme.editorTheme = data;
+    },
+    SET_PREFERRED_LANG(state, data) {
+      state.editorSettings.preferredLang = data;
     }
   },
   actions: {

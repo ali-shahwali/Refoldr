@@ -5,18 +5,9 @@
         <v-list two-line style="height: calc(100vh - 112px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
-              <v-row>
-                <v-col cols="11">
-                  <v-btn block @click="createNewSnippet" color="primary">
-                    <v-icon left>mdi-plus</v-icon> Add new
-                  </v-btn>
-                </v-col>
-                <v-col class="pl-0" cols="1">
-                  <v-btn @click="dialogSettings = true" icon>
-                    <v-icon>mdi-cog</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
+              <v-btn block @click="createNewSnippet" color="primary">
+                <v-icon left>mdi-plus</v-icon> Add new
+              </v-btn>
             </div>
             <v-divider></v-divider>
             <template v-for="(snippet, index) in snippets">
@@ -92,75 +83,6 @@
     >
       Snippet with that name already exists!
     </v-snackbar>
-
-    <v-dialog
-      width="33vw"
-      v-model="dialogSettings"
-      transition="dialog-bottom-transition"
-    >
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="dialogSettings = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Settings</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-list three-line subheader>
-          <v-subheader>Preferences</v-subheader>
-          <v-list-item two-line>
-            <v-list-item-content>
-              <v-list-item-title>Set preferred language</v-list-item-title>
-              <v-list-item-subtitle>
-                <v-autocomplete
-                  @change="setPreferences()"
-                  style="max-width: 300px;"
-                  v-model="preferredLang"
-                  :items="langs"
-                  filled
-                  solo
-                  class="mt-6"
-                  label="Language"
-                  menu-props="auto"
-                  spellcheck="false"
-                  item-text="name"
-                  item-value="value"
-                >
-                  <template v-slot:selection="data">
-                    <v-avatar
-                      rounded
-                      size="small"
-                      style="height: 20px; width: 20px;"
-                      class="mr-2"
-                      left
-                    >
-                      <v-img :src="data.item.avatar"></v-img>
-                    </v-avatar>
-                    {{ data.item.name }}
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar
-                        rounded
-                        size="small"
-                        style="height: 20px; width: 20px;"
-                      >
-                        <img :src="data.item.avatar" />
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          v-html="data.item.name"
-                        ></v-list-item-title>
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 <script>
@@ -169,13 +91,16 @@ import { supportedLangs } from "../assets/langs";
 import Snippet from "./Snippet";
 import store from "../store";
 import Cookies from "js-cookie";
-import DefaultBackground from "./subcomponents/DefaultBackground";
 
 export default {
   name: "Bank",
   components: {
     defaultBackground: DefaultBackground,
     snippet: Snippet
+  },
+  computed: {
+    ...mapGetters({ user: "user" }),
+    ...mapGetters({ editorSettings: "editorSettings" })
   },
   data: function() {
     return {
@@ -187,16 +112,10 @@ export default {
       snackbarNewSnippetAlreadyExists: false,
       dialogSettings: false,
       langs: supportedLangs,
-      preferredLang: "javascript",
       snippetKey: 0
     };
   },
   mounted() {
-    // on after page load
-    let prefLang = Cookies.get("preferredLang");
-    if (prefLang !== undefined) this.preferredLang = prefLang;
-    else Cookies.set("preferredLang", "javascript", { expires: 90 });
-
     let index = parseInt(Cookies.get("lastSnippet"));
     if (index !== undefined) {
       this.selectedSnippetIndex = index;
@@ -231,7 +150,7 @@ export default {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
-          lang: Cookies.get("preferredLang"),
+          lang: this.editorSettings.preferredLang,
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -242,7 +161,7 @@ export default {
           id: docRef.id,
           name: "New snippet",
           content: "",
-          lang: Cookies.get("preferredLang"),
+          lang: this.editorSettings.preferredLang,
           isFavorited: false,
           creationTime: Timestamp.now(),
           uid: store.state.user.data.id
@@ -313,9 +232,6 @@ export default {
     getLangSvg(lang) {
       if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
       else return require("@/assets/langs/placeholder.svg");
-    },
-    setPreferences() {
-      Cookies.set("preferredLang", this.preferredLang, { expires: 90 });
     }
   },
   firestore: {

@@ -14,6 +14,7 @@
       ></v-text-field>
       <v-autocomplete
         @input="fieldUpdate"
+        @change="editorKey += 1"
         style="max-width: 300px;"
         v-model="snippet.lang"
         :items="langs"
@@ -69,6 +70,21 @@
         </v-btn>
       </div>
       <v-spacer></v-spacer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            @click.stop="drawerOpen = !drawerOpen"
+            icon
+          >
+            <v-icon dark>
+              mdi-cog
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>Editor settings</span>
+      </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -134,11 +150,11 @@
     </v-toolbar>
 
     <editor
+      :key="editorKey"
       @input="fieldUpdate"
       class="editor"
-      v-if="selectedSnippetIndex !== undefined"
       v-model="snippet.content"
-      @init="editorInit"
+      @init="editorInit(editorTheme, snippet.lang)"
       :lang="snippet.lang"
       :theme="theme"
       width="100%"
@@ -206,16 +222,94 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-navigation-drawer
+      hide-overlay
+      absolute
+      temporary
+      right
+      v-model="drawerOpen"
+    >
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>
+            Editor Settings
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider class="mb-5"></v-divider>
+        <div class="pa-4">
+          <v-menu rounded max-height="30vh" offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn block rounded v-bind="attrs" v-on="on">
+                Set editor theme
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                @click="setEditorTheme(theme.value)"
+                v-for="theme in themes"
+                :key="theme.theme"
+              >
+                <v-list-item-title>{{ theme.theme }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-divider class="mb-5 mt-5"></v-divider>
+          <v-list-item>
+            <v-autocomplete
+              @change="setPreferredLang(preferredLang)"
+              v-model="preferredLang"
+              :items="langs"
+              menu-props="auto"
+              filled
+              solo
+              chips
+              item-text="name"
+              item-value="value"
+              spellcheck="false"
+            >
+              <template v-slot:selection="data">
+                <v-avatar
+                  rounded
+                  size="small"
+                  style="height: 20px; width: 20px;"
+                  class="mr-2"
+                  left
+                >
+                  <v-img :src="data.item.avatar"></v-img>
+                </v-avatar>
+                {{ data.item.name }}
+              </template>
+              <template v-slot:item="data">
+                <template>
+                  <v-list-item-avatar
+                    rounded
+                    size="small"
+                    style="height: 20px; width: 20px;"
+                  >
+                    <img :src="data.item.avatar" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-html="data.item.name"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </template>
+              </template>
+            </v-autocomplete>
+          </v-list-item>
+        </div>
+      </v-list>
+    </v-navigation-drawer>
   </div>
-
-
 </template>
 
 <script>
 import Editor from "vue2-ace-editor";
 import { supportedLangs } from "../assets/langs";
 import store from "../store";
+import { mapMutations, mapGetters } from "vuex";
 import { debounce } from "debounce";
+import { init, themes } from "../assets/editor";
 
 export default {
   name: "Snippet",
@@ -225,12 +319,15 @@ export default {
   computed: {
     editorTheme() {
       return store.state.theme.editorTheme;
-    }
+    },
+    ...mapGetters({ editorSettings: "editorSettings" }),
+    ...mapGetters({ siteTheme: "theme" })
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
     editorTheme(newTheme, oldTheme) {
       this.theme = newTheme;
+      this.editorKey += 1;
     }
   },
   props: {
@@ -241,8 +338,10 @@ export default {
     return {
       langs: supportedLangs,
       lineNumbers: true,
-      readonly: false,
+      drawerOpen: null,
       theme: "",
+      preferredLang: "",
+      themes: themes,
       snackbarDeleted: false,
       dialogDelete: false,
       snackbarCopied: false,
@@ -250,42 +349,12 @@ export default {
       timeout: 2000,
       pendingSave: false,
       state: "loading",
-      firstLoad: false
+      firstLoad: false,
+      editorKey: 0,
     };
   },
   methods: {
-    editorInit: function() {
-      require("brace/ext/language_tools");
-      require("brace/mode/html");
-      require("brace/mode/javascript");
-      require("brace/mode/python");
-      require("brace/mode/c_cpp");
-      require("brace/mode/csharp");
-      require("brace/mode/haskell");
-      require("brace/mode/elixir");
-      require("brace/mode/erlang");
-      require("brace/mode/rust");
-      require("brace/mode/r");
-      require("brace/mode/css");
-      require("brace/mode/jsx");
-      require("brace/mode/swift");
-      require("brace/mode/golang");
-      require("brace/mode/php");
-      require("brace/mode/java");
-      require("brace/mode/typescript");
-      require("brace/mode/sql");
-      require("brace/mode/mysql");
-      require("brace/mode/sqlserver");
-      require("brace/mode/matlab");
-      require("brace/mode/ruby");
-      require("brace/mode/kotlin");
-      require("brace/mode/ocaml");
-      require("brace/mode/dart");
-      require("brace/mode/perl");
-      require("brace/mode/julia");
-      require("brace/theme/chrome");
-      require("brace/theme/dracula");
-    },
+    editorInit: init,
     deleteSnippet() {
       this.$emit("onDelete", this.snippet.id);
       this.snackbarDeleted = true;
@@ -331,6 +400,8 @@ export default {
       document.body.removeChild(dummy);
       this.snackbarCopied = true;
     },
+    ...mapMutations({ setEditorTheme: "SET_EDITOR_THEME" }),
+    ...mapMutations({ setPreferredLang: "SET_PREFERRED_LANG" }),
     _saveListener(e) {
       if (
         (window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) &&
@@ -343,7 +414,8 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this._saveListener);
-    this.theme = store.state.theme.editorTheme;
+    this.theme = this.siteTheme.editorTheme;
+    this.preferredLang = this.editorSettings.preferredLang;
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this._saveListener);

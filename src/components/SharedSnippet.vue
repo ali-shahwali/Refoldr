@@ -1,5 +1,5 @@
 <template>
-  <v-container style="height: 100%">
+  <v-container style="height: 100%" v-if="theme !== undefined && lang !== undefined">
     <v-row style="height: 100%">
       <v-col cols="2"></v-col>
       <v-col cols="8">
@@ -38,9 +38,10 @@
           </v-tooltip>
         </v-toolbar>
         <editor
-          @init="editorInit"
+          :key="editorKey"
+          @init="editorInit(theme, lang.value)"
           :theme="theme"
-          :lang="lang.value"
+          :lang="snippet.lang"
           v-model="snippet.content"
           :options="{
             useWorker: false,
@@ -84,6 +85,7 @@
       </template>
     </v-snackbar>
   </v-container>
+  <v-progress-linear indeterminate v-else></v-progress-linear>
 </template>
 
 <script>
@@ -91,6 +93,8 @@ import Editor from "vue2-ace-editor";
 import { db, getUserByUid } from "../firebase";
 import { supportedLangs } from "../assets/langs";
 import store from "../store";
+import {init} from "../assets/editor";
+import {mapGetters} from "vuex";
 
 export default {
   name: "SharedSnippet",
@@ -112,12 +116,14 @@ export default {
   computed: {
     editorTheme() {
       return store.state.theme.editorTheme;
-    }
+    },
+    ...mapGetters({ siteTheme: "theme" })
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
     editorTheme(newTheme, oldTheme) {
       this.theme = newTheme;
+      this.editorKey += 1;
     }
   },
   data: function() {
@@ -125,45 +131,15 @@ export default {
       snippet: {},
       user: {},
       link: "",
-      lang: "",
-      theme: "",
+      lang: undefined,
+      theme: undefined,
       snackbarCopied: false,
-      timeout: 2000
+      timeout: 2000,
+      editorKey: 0,
     };
   },
   methods: {
-    editorInit: function() {
-      require("brace/ext/language_tools");
-      require("brace/mode/html");
-      require("brace/mode/javascript");
-      require("brace/mode/python");
-      require("brace/mode/c_cpp");
-      require("brace/mode/csharp");
-      require("brace/mode/haskell");
-      require("brace/mode/elixir");
-      require("brace/mode/erlang");
-      require("brace/mode/rust");
-      require("brace/mode/r");
-      require("brace/mode/css");
-      require("brace/mode/jsx");
-      require("brace/mode/swift");
-      require("brace/mode/golang");
-      require("brace/mode/php");
-      require("brace/mode/java");
-      require("brace/mode/typescript");
-      require("brace/mode/sql");
-      require("brace/mode/mysql");
-      require("brace/mode/sqlserver");
-      require("brace/mode/matlab");
-      require("brace/mode/ruby");
-      require("brace/mode/kotlin");
-      require("brace/mode/ocaml");
-      require("brace/mode/dart");
-      require("brace/mode/perl");
-      require("brace/mode/julia");
-      require("brace/theme/dracula");
-      require("brace/theme/chrome");
-    },
+    editorInit: init,
     copySnippetToClipboard() {
       let dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
@@ -184,6 +160,9 @@ export default {
     }
   },
   async created() {
+
+    this.theme = this.siteTheme.editorTheme;
+
     await db
       .collection("snippets")
       .doc(this.$route.params.id)
@@ -205,9 +184,6 @@ export default {
         }
       });
   },
-  mounted() {
-    this.theme = store.state.theme.editorTheme;
-  }
 };
 </script>
 
