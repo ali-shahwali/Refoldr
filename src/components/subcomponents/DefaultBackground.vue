@@ -49,14 +49,12 @@ export default {
 <style scoped>
 .bgLight {
   background: #4e54c8;
-  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
   width: 100%;
   height: calc(100vh - 112px);
 }
 
 .bgDark {
   background: #000;
-  background: -webkit-linear-gradient(to left, #111, #fff);
   width: 100%;
   height: calc(100vh - 112px);
 }
