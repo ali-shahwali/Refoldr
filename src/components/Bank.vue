@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row no-gutters>
-      <v-col cols="3" >
+      <v-col cols="3">
         <v-list two-line style="height: calc(100vh - 112px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
@@ -66,26 +66,21 @@
           @onToggleFavorite="toggleFavorite"
           @onUpdate="updateSnippet"
         ></snippet>
-        <v-parallax
-          v-else
-          translate="false"
-          src="../assets/SnippetMissingBG.svg"
-          style="height: calc(100vh - 112px)"
-        >
-          <v-row align="center" justify="center">
+        <default-background v-else style="height: calc(100vh - 100px)">
+          <v-row align="center" style="padding-top: 35vh" justify="center">
             <v-col class="text-center" cols="12">
               <v-icon class="mb-4" color="primary" x-large dark
                 >mdi-code-tags</v-icon
               >
               <h1
-                style="user-select: none"
-                class="display-1 font-weight-thin mb-4"
+                style="user-select: none; text-shadow: 0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1);"
+                class="display-1 font-weight-thin mb-4 white--text"
               >
                 No snippet selected
               </h1>
             </v-col>
           </v-row>
-        </v-parallax>
+        </default-background>
       </v-col>
     </v-row>
     <v-snackbar
@@ -174,10 +169,12 @@ import { supportedLangs } from "../assets/langs";
 import Snippet from "./Snippet";
 import store from "../store";
 import Cookies from "js-cookie";
+import DefaultBackground from "./subcomponents/DefaultBackground";
 
 export default {
   name: "Bank",
   components: {
+    defaultBackground: DefaultBackground,
     snippet: Snippet
   },
   data: function() {
@@ -286,12 +283,12 @@ export default {
       } else {
         // we can still update content and lang!
         await db
-            .collection("snippets")
-            .doc(id)
-            .update({
-              content: content,
-              lang: lang
-            });
+          .collection("snippets")
+          .doc(id)
+          .update({
+            content: content,
+            lang: lang
+          });
         this.snackbarAlreadyExists = true;
       }
     },
