@@ -88,7 +88,7 @@ export default {
     this.switchBool = this.theme.dark;
     this.switchIcon = this.theme.dark
       ? "mdi-moon-waning-crescent"
-      : "mdi-weather-sunny";
+      : "mdi-white-balance-sunny";
   }
 };
 </script>
