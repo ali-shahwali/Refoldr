@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import Welcome from "./Welcome";
 import {mapGetters} from "vuex";
 
 export default {
@@ -23,7 +22,7 @@ export default {
   },
   components: {
     bank: () => import("./Bank"), // lazy load to avoid crashing, REALLY DUMB!
-    welcome: Welcome
+    welcome: () => import("./Welcome")
   }
 }
 </script>

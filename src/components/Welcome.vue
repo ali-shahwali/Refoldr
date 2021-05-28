@@ -52,7 +52,7 @@
             <div></div>
 
             <v-btn
-              v-if="dark"
+              v-if="theme.dark"
               color="indigo"
               class="mt-5 white--text"
               elevation="24"
@@ -91,13 +91,16 @@
 <script>
 import { signInWithGoogle } from "../firebase";
 import DefaultBackground from "./subcomponents/DefaultBackground";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Welcome",
   components: {
     defaultBackground: DefaultBackground
   },
-
+  computed: {
+    ...mapGetters({theme: "theme"})
+  },
   data: function() {
     return {};
   },

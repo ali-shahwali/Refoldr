@@ -227,6 +227,7 @@
       absolute
       temporary
       right
+      width="350px"
       v-model="drawerOpen"
     >
       <v-list>
@@ -237,24 +238,41 @@
         </v-list-item>
         <v-divider class="mb-5"></v-divider>
         <div class="pa-4">
-          <v-menu rounded max-height="30vh" offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn block rounded v-bind="attrs" v-on="on">
-                Set editor theme
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                @click="setEditorTheme(theme.value)"
-                v-for="theme in themes"
-                :key="theme.theme"
-              >
-                <v-list-item-title>{{ theme.theme }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+          <v-list-item>
+            <v-autocomplete
+                @change="setEditorTheme(theme)"
+                v-model="theme"
+                :items="themes"
+                menu-props="auto"
+                filled
+                solo
+                hint="Set editor theme"
+                persistent-hint
+                item-text="theme"
+                item-value="value"
+                spellcheck="false"
+            >
+              <template v-slot:selection="data">
+                <v-icon class="mr-4" color="indigo" small v-if="data.item.type === 'dark'">mdi-moon-waning-crescent</v-icon>
+                <v-icon class="mr-4" small v-else>mdi-white-balance-sunny</v-icon>
+                {{ data.item.theme }}
+              </template>
+              <template v-slot:item="data">
+                <template>
+                  <v-icon class="mr-4" color="indigo" small v-if="data.item.type === 'dark'">mdi-moon-waning-crescent</v-icon>
+                  <v-icon class="mr-4" small v-else>mdi-white-balance-sunny</v-icon>
+                  <v-list-item-content>
+                    <v-list-item-title
+                        v-html="data.item.theme"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </template>
+              </template>
+            </v-autocomplete>
+          </v-list-item>
           <v-divider class="mb-5 mt-5"></v-divider>
           <v-list-item>
+            <v-list-item-content>
             <v-autocomplete
               @change="setPreferredLang(preferredLang)"
               v-model="preferredLang"
@@ -262,7 +280,8 @@
               menu-props="auto"
               filled
               solo
-              chips
+              hint="Set preferred language"
+              persistent-hint
               item-text="name"
               item-value="value"
               spellcheck="false"
@@ -296,6 +315,7 @@
                 </template>
               </template>
             </v-autocomplete>
+            </v-list-item-content>
           </v-list-item>
         </div>
       </v-list>

@@ -1,7 +1,7 @@
 
 export const themes = [
   {
-    theme: "Chrome",
+    theme: "Chrome (default)",
     value: "chrome",
     type: "light"
   },
@@ -91,7 +91,7 @@ export const themes = [
     type: "dark"
   },
   {
-    theme: "Dracula",
+    theme: "Dracula (default)",
     value: "dracula",
     type: "dark"
   },

@@ -33,14 +33,16 @@ export { Timestamp };
 
 auth.onAuthStateChanged(user => {
   store.dispatch("fetchUser", user);
-  db.collection("users")
-    .doc(user.uid)
-    .set({
-      name: user.displayName,
-      email: user.email,
-      lastAuthChange: Timestamp.now(),
-      photoURL: user.photoURL
-    });
+  if(user !== null) {
+      db.collection("users")
+          .doc(user.uid)
+          .set({
+              name: user.displayName,
+              email: user.email,
+              lastAuthChange: Timestamp.now(),
+              photoURL: user.photoURL
+          });
+  }
 });
 
 export const getUserByUid = uid => {

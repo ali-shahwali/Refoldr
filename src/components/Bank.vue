@@ -91,6 +91,8 @@ import { supportedLangs } from "../assets/langs";
 import Snippet from "./Snippet";
 import store from "../store";
 import Cookies from "js-cookie";
+import DefaultBackground from "./subcomponents/DefaultBackground";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Bank",

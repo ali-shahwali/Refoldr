@@ -12,7 +12,7 @@
       :input-value="switchBool"
       inset
       persistent-hint
-      color="primary"
+      color="indigo"
       @change="changeTheme"
     ></v-switch>
     <div v-if="user.loggedIn">
@@ -93,4 +93,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

@@ -29,16 +29,15 @@ export default {
 </script>
 
 <style>
-
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(97, 97, 97, 0.6);
 }
 
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(97, 97, 97, 0.6);
 }
 html {
   overflow-y: auto !important;
