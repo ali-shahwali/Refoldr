@@ -21,7 +21,7 @@
           >
           <v-spacer></v-spacer>
 
-          <v-tooltip bottom>
+<!--          <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                   v-bind="attrs"
@@ -35,7 +35,7 @@
               </v-btn>
             </template>
             <span>Save to bank</span>
-          </v-tooltip>
+          </v-tooltip>-->
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -72,7 +72,7 @@
         >
         </editor>
         <v-text-field
-          append-icon="mdi-content-copy"
+          append-icon="mdi-link"
           rounded
           solo
           class="mt-2"
