@@ -48,7 +48,7 @@
         <snippet
           v-if="
             selectedSnippetIndex !== undefined &&
-              selectedSnippet.name !== undefined
+            selectedSnippet !== undefined
           "
           :selected-snippet-index="selectedSnippetIndex"
           :snippet="selectedSnippet"
@@ -90,9 +90,8 @@ import { db, Timestamp } from "../firebase";
 import { supportedLangs } from "../assets/langs";
 import Snippet from "./Snippet";
 import store from "../store";
-import Cookies from "js-cookie";
 import DefaultBackground from "./subcomponents/DefaultBackground";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 
 export default {
   name: "Bank",
@@ -102,36 +101,26 @@ export default {
   },
   computed: {
     ...mapGetters({ user: "user" }),
-    ...mapGetters({ editorSettings: "editorSettings" })
+    ...mapGetters({ editorSettings: "editorSettings" }),
+    ...mapGetters(({lastVisit: "lastVisit"}))
+  },
+  watch: {
+    snippets(value) {
+      this.selectedSnippet = value[this.selectedSnippetIndex]
+    }
   },
   data: function() {
     return {
       snippets: [],
       selectedSnippetIndex: undefined,
       selectedSnippet: {},
-      timeout: 2000,
-      snackbarAlreadyExists: false,
-      snackbarNewSnippetAlreadyExists: false,
       dialogSettings: false,
       langs: supportedLangs,
-      snippetKey: 0
+      snippetKey: 0,
+      snackbarAlreadyExists: false,
+      snackbarNewSnippetAlreadyExists: false,
+      timeout: 2000
     };
-  },
-  mounted() {
-    let index = parseInt(Cookies.get("lastSnippet"));
-    if (index !== undefined) {
-      this.selectedSnippetIndex = index;
-    }
-
-    setTimeout(() => {
-      this.selectedSnippet = this.snippets[index];
-
-      // if servers are slow e.t.c set to default values
-      if (this.selectedSnippet === undefined) {
-        this.selectedSnippet = {};
-        this.selectedSnippetIndex = undefined;
-      }
-    }, 1000);
   },
   methods: {
     async toggleFavorite(id, bool) {
@@ -224,17 +213,21 @@ export default {
     },
     selectSnippet(snippet) {
       this.selectedSnippet = snippet;
-      for (let i = 0; i < this.snippets.length; i++) {
-        if (this.snippets[i].id === snippet.id) {
-          Cookies.set("lastSnippet", i, { expires: 30 }); // expires in 1 month
-        }
-      }
+
+      for (let i = 0; i < this.snippets.length; i++)
+        if (this.snippets[i].id === snippet.id)
+          this.setLastSnippetIndex(i);
+
       this.snippetKey += 1;
     },
     getLangSvg(lang) {
       if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
       else return require("@/assets/langs/placeholder.svg");
-    }
+    },
+    ...mapMutations({setLastSnippetIndex: "SET_LAST_SNIPPET_INDEX"})
+  },
+  mounted() {
+    this.selectedSnippetIndex = this.lastVisit.lastSnippetIndex;
   },
   firestore: {
     snippets: db

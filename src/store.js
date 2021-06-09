@@ -17,6 +17,9 @@ const store = new Vuex.Store({
     },
     editorSettings: {
       preferredLang: "javascript"
+    },
+    lastVisit: {
+      lastSnippetIndex: undefined
     }
   },
   getters: {
@@ -28,6 +31,9 @@ const store = new Vuex.Store({
     },
     editorSettings(state) {
       return state.editorSettings;
+    },
+    lastVisit(state) {
+      return state.lastVisit;
     }
   },
   mutations: {
@@ -45,6 +51,9 @@ const store = new Vuex.Store({
     },
     SET_PREFERRED_LANG(state, data) {
       state.editorSettings.preferredLang = data;
+    },
+    SET_LAST_SNIPPET_INDEX(state, value) {
+      state.lastVisit.lastSnippetIndex = value;
     }
   },
   actions: {

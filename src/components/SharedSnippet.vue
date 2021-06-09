@@ -15,12 +15,27 @@
           >
           <v-subheader>
             <v-avatar style="height: 30px; width: 30px">
-              <img :src="user.photoURL" />
+              <img :src="creator.photoURL" />
             </v-avatar>
-            {{ user.name }}</v-subheader
+            {{ creator.name }}</v-subheader
           >
           <v-spacer></v-spacer>
 
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="saveToBank()"
+                  icon
+              >
+                <v-icon dark>
+                  mdi-folder-download
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>Save to bank</span>
+          </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -105,7 +120,7 @@ export default {
         {
           vmid: 'description',
           name: 'description',
-          content: `${this.snippet.name} by ${this.user.name}`,
+          content: `${this.snippet.name} by ${this.creator.name}`,
         }
       ],
     };
@@ -117,7 +132,8 @@ export default {
     editorTheme() {
       return store.state.theme.editorTheme;
     },
-    ...mapGetters({ siteTheme: "theme" })
+    ...mapGetters({ siteTheme: "theme" }),
+    ...mapGetters({user: "user"})
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -129,7 +145,7 @@ export default {
   data: function() {
     return {
       snippet: {},
-      user: {},
+      creator: {},
       link: "",
       lang: undefined,
       theme: undefined,
@@ -157,6 +173,18 @@ export default {
       document.execCommand("copy");
       document.body.removeChild(dummy);
       this.snackbarCopied = true;
+    },
+    async saveToBank() {
+      await db
+      .collection("snippets")
+      .add({
+        uid: this.user.data.uid,
+        name: this.snippet.name,
+        lang: this.snippet.lang,
+        content: this.snippet.content,
+        isFavorited: false,
+        creationTime: this.snippet.creationTime,
+      })
     }
   },
   async created() {
@@ -176,7 +204,7 @@ export default {
           getUserByUid(doc.data().uid)
             .get()
             .then(docRef => {
-              this.user = docRef.data();
+              this.creator = docRef.data();
             });
           supportedLangs.forEach(lang => {
             if (lang.value === doc.data().lang) this.lang = lang;
