@@ -2,7 +2,7 @@
   <div>
     <v-row no-gutters>
       <v-col cols="3">
-        <v-list two-line style="height: calc(100vh - 112px); overflow-y: auto;">
+        <v-list :key="listKey" two-line style="height: calc(100vh - 112px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
               <v-btn block @click="createNewSnippet" color="primary">
@@ -45,7 +45,7 @@
         </v-list>
       </v-col>
       <v-col cols="9">
-        <snippet
+        <snippet-editor
           v-if="
             selectedSnippetIndex !== undefined &&
             selectedSnippet !== undefined
@@ -56,9 +56,9 @@
           @onDelete="deleteSnippet"
           @onToggleFavorite="toggleFavorite"
           @onUpdate="updateSnippet"
-        ></snippet>
+        ></snippet-editor>
         <default-background v-else style="height: calc(100vh - 100px)">
-          <v-row align="center" style="padding-top: 35vh" justify="center">
+        <v-row align="center" style="padding-top: 35vh" justify="center">
             <v-col class="text-center" cols="12">
               <v-icon class="mb-4" color="primary" x-large dark
                 >mdi-code-tags</v-icon
@@ -88,7 +88,7 @@
 <script>
 import { db, Timestamp } from "../firebase";
 import { supportedLangs } from "../assets/langs";
-import Snippet from "./Snippet";
+import SnippetEditor from "./SnippetEditor";
 import store from "../store";
 import DefaultBackground from "./subcomponents/DefaultBackground";
 import {mapGetters, mapMutations} from "vuex";
@@ -97,7 +97,7 @@ export default {
   name: "Bank",
   components: {
     defaultBackground: DefaultBackground,
-    snippet: Snippet
+    snippetEditor: SnippetEditor
   },
   computed: {
     ...mapGetters({ user: "user" }),
@@ -119,7 +119,8 @@ export default {
       snippetKey: 0,
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
-      timeout: 2000
+      timeout: 2000,
+      listKey: 0
     };
   },
   methods: {
@@ -131,13 +132,14 @@ export default {
     },
     async createNewSnippet() {
       // check to see if the user already has an empty new snippet on their account (prevent spamming)
-      const newSnippet = await db
-        .collection("snippets")
-        .where("uid", "==", store.state.user.data.id)
-        .where("name", "==", "New snippet")
-        .get();
+      let newSnippetExists = false;
 
-      if (newSnippet.empty === true) {
+      this.snippets.forEach(snippet => {
+        if(snippet.name === "New snippet")
+          newSnippetExists = true;
+      })
+
+      if (!newSnippetExists) {
         const docRef = await db.collection("snippets").add({
           name: "New snippet",
           content: "",
@@ -147,7 +149,13 @@ export default {
           uid: store.state.user.data.id
         });
 
-        this.selectedSnippetIndex = this.snippets.length - 1;
+        let index = 0;
+
+        for(let i = 0; i < this.snippets.length; i++)
+          if(this.snippets[i].isFavorited)
+            index++;
+
+        this.selectedSnippetIndex = index;
         this.selectSnippet({
           id: docRef.id,
           name: "New snippet",
@@ -167,37 +175,37 @@ export default {
           }
         }
       }
+      this.listKey += 1;
     },
-    async updateSnippet(id, name, content, lang) {
+    async updateSnippet(snippet) {
       const check = await db
         .collection("snippets")
-        .where("uid", "==", store.state.user.data.id)
-        .where("name", "==", name)
+        .where("uid", "==", this.user.data.id)
+        .where("name", "==", snippet.name)
         .get();
 
       let count = 0;
       check.forEach(doc => {
-        if (doc.id === id) {
-          // eslint-disable-next-line no-empty
-        } else count++;
+        if (doc.id !== snippet.id)
+          count++;
       });
       if (count === 0) {
         await db
           .collection("snippets")
-          .doc(id)
+          .doc(snippet.id)
           .update({
-            name: name,
-            content: content,
-            lang: lang
+            name: snippet.name,
+            content: snippet.content,
+            lang: snippet.lang
           });
       } else {
         // we can still update content and lang!
         await db
           .collection("snippets")
-          .doc(id)
+          .doc(snippet.id)
           .update({
-            content: content,
-            lang: lang
+            content: snippet.content,
+            lang: snippet.lang
           });
         this.snackbarAlreadyExists = true;
       }

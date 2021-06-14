@@ -105,10 +105,10 @@
 
 <script>
 import Editor from "vue2-ace-editor";
-import { db, getUserByUid } from "../firebase";
-import { supportedLangs } from "../assets/langs";
-import store from "../store";
-import {init} from "../assets/editor";
+import { db, getUserByUid } from "../../firebase";
+import { supportedLangs } from "../../assets/langs";
+import store from "../../store";
+import {init} from "../../assets/editor";
 import {mapGetters} from "vuex";
 
 export default {

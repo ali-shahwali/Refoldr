@@ -54,6 +54,7 @@
           </template>
         </template>
       </v-autocomplete>
+
       <div class="ml-4">
         <v-btn
           v-if="pendingSave"
@@ -148,7 +149,6 @@
         <span>Delete</span>
       </v-tooltip>
     </v-toolbar>
-
     <editor
       :key="editorKey"
       @input="fieldUpdate"
@@ -385,10 +385,7 @@ export default {
       if (this.snippet.name.length >= 3) {
         this.$emit(
           "onUpdate",
-          this.snippet.id,
-          this.snippet.name,
-          this.snippet.content,
-          this.snippet.lang
+          this.snippet
         );
         this.pendingSave = false;
       } else {

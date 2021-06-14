@@ -21,8 +21,8 @@ export default {
     ...mapGetters({user: "user"})
   },
   components: {
-    bank: () => import("./Bank"), // lazy load to avoid crashing, REALLY DUMB!
-    welcome: () => import("./Welcome")
+    bank: () => import("../Bank"), // lazy load to avoid crashing, REALLY DUMB!
+    welcome: () => import("../Welcome")
   }
 }
 </script>

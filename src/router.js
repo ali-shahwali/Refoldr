@@ -11,23 +11,23 @@ const router = new Router({
     {
       path: "/",
       name: "Home",
-      component: () => import("./components/Home")
+      component: () => import("./components/pages/Home")
     },
     {
       path: "/snippet/:id",
       name: "SharedSnippet",
-      component: () => import("./components/SharedSnippet")
+      component: () => import("./components/pages/SharedSnippet")
     },
     {
       path: "/not_found",
       name: "NotFound",
-      component: () => import("./components/NotFound")
+      component: () => import("./components/pages/NotFound")
     },
     {
       path: "/:pathMatch(.*)*",
       name: "Home",
       redirect: "/",
-      component: () => import("./components/Home")
+      component: () => import("./components/pages/Home")
     }
   ]
 });
