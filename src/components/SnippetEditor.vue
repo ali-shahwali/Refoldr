@@ -9,7 +9,7 @@
       :lang="snippet.lang"
       :theme="theme"
       width="100%"
-      height="calc(100vh - 48px)"
+      height="100vh"
       :options="{
         useWorker: false,
         selectionStyle: 'text',
@@ -42,7 +42,7 @@
         <v-icon left>mdi-content-save</v-icon>Saved
       </v-btn>
     </div>
-    <div style="position: fixed; bottom: 70px; right: 35px">
+    <div style="position: fixed; bottom: 40px; right: 35px">
       <v-row>
         <v-col cols="2">
           <v-menu
@@ -69,7 +69,7 @@
                   >
                     <v-avatar
                         rounded
-                        size="40"
+                        size="35"
                         style="height: 35px; width: 35px;"
                     >
                       <v-img :src="getLangSvg(snippet.lang)"></v-img>
@@ -144,7 +144,7 @@
               color="#F2C14E"
               fab
           >
-            <v-icon>mdi-star</v-icon>
+            <v-icon color="white">mdi-star</v-icon>
           </v-btn>
           <v-btn
               v-else
@@ -155,7 +155,7 @@
               color="#99959B"
               fab
           >
-            <v-icon>mdi-star-outline</v-icon>
+            <v-icon color="white">mdi-star-outline</v-icon>
           </v-btn>
         </template>
         <span>Favorite</span>
@@ -170,7 +170,7 @@
               color="#87B6E1"
               fab
           >
-            <v-icon dark>
+            <v-icon color="white">
               mdi-content-copy
             </v-icon>
           </v-btn>
@@ -189,7 +189,7 @@
               fab
               color="#8790D9"
           >
-            <v-icon>mdi-share</v-icon>
+            <v-icon color="white">mdi-share</v-icon>
           </v-btn>
         </template>
         <span>Share</span>
@@ -204,7 +204,7 @@
               fab
               color="#5948D5"
           >
-            <v-icon dark>
+            <v-icon color="white">
               mdi-cog
             </v-icon>
           </v-btn>
@@ -219,7 +219,7 @@
               @click="dialogDelete = true"
               fab
               color="#D7263D">
-            <v-icon>mdi-delete</v-icon>
+            <v-icon color="white">mdi-delete</v-icon>
           </v-btn>
         </template>
         <span>Delete</span>

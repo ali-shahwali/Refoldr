@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="resize">
     <v-row no-gutters>
       <v-col cols="3">
         <v-toolbar height="80">
           <v-img max-width="40" src="../assets/logo.svg"></v-img>
-          <v-toolbar-title class="mx-3">
+          <v-toolbar-title style="user-select: none" class="mx-3">
             <div class="ml-4">
               <strong style="font-size: 1.5rem" >Refoldr</strong>
             </div>
@@ -13,15 +13,15 @@
             </v-subheader>
           </v-toolbar-title>
         </v-toolbar>
-        <v-list :key="listKey" two-line style="height: calc(100vh - 192px); overflow-y: auto;">
+        <v-list shaped rounded :key="listKey" two-line style="height: calc(100vh - 144px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
               <v-btn block @click="createNewSnippet" color="primary">
                 <v-icon left>mdi-plus</v-icon> Add new
               </v-btn>
             </div>
-            <v-divider></v-divider>
-            <template v-for="(snippet, index) in snippets">
+            <v-divider class="pb-4"></v-divider>
+            <template v-for="snippet in snippets">
               <v-list-item
                 id="listItem"
                 @click="selectSnippet(snippet)"
@@ -47,10 +47,6 @@
                   </v-list-item-action>
                 </template>
               </v-list-item>
-              <v-divider
-                v-if="index < snippets.length - 1"
-                :key="index"
-              ></v-divider>
             </template>
 
           </v-list-item-group>
@@ -91,35 +87,35 @@
           </v-menu>
         </v-toolbar>
       </v-col>
-      <v-col cols="9">
-        <snippet-editor
-          v-if="
-            selectedSnippetIndex !== undefined &&
-            selectedSnippet !== undefined
-          "
-          :selected-snippet-index="selectedSnippetIndex"
-          :snippet="selectedSnippet"
-          :key="snippetKey"
-          @onDelete="deleteSnippet"
-          @onToggleFavorite="toggleFavorite"
-          @onUpdate="updateSnippet"
-        ></snippet-editor>
-        <default-background v-else style="height: calc(100vh - 100px)">
-        <v-row align="center" style="padding-top: 35vh" justify="center">
-            <v-col class="text-center" cols="12">
-              <v-icon class="mb-4" color="primary" x-large dark
-                >mdi-code-tags</v-icon
-              >
-              <h1
-                style="user-select: none; text-shadow: 0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1);"
-                class="display-1 font-weight-thin mb-4 white--text"
-              >
-                No snippet selected
-              </h1>
-            </v-col>
-          </v-row>
-        </default-background>
-      </v-col>
+        <v-col class="resizable-content" cols="9">
+          <snippet-editor
+            v-if="
+              selectedSnippetIndex !== undefined &&
+              selectedSnippet !== undefined
+            "
+            :selected-snippet-index="selectedSnippetIndex"
+            :snippet="selectedSnippet"
+            :key="snippetKey"
+            @onDelete="deleteSnippet"
+            @onToggleFavorite="toggleFavorite"
+            @onUpdate="updateSnippet"
+          ></snippet-editor>
+          <default-background v-else style="height: 948px">
+          <v-row align="center" style="padding-top: 35vh" justify="center">
+              <v-col class="text-center" cols="12">
+                <v-icon class="mb-4" color="primary" x-large dark
+                  >mdi-code-tags</v-icon
+                >
+                <h1
+                  style="user-select: none; text-shadow: 0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1);"
+                  class="display-1 font-weight-thin mb-4 white--text"
+                >
+                  No snippet selected
+                </h1>
+              </v-col>
+            </v-row>
+          </default-background>
+        </v-col>
     </v-row>
     <v-snackbar
       style="margin: 0 1rem 4rem 0"
@@ -143,8 +139,8 @@ import {mapGetters, mapMutations} from "vuex";
 export default {
   name: "Bank",
   components: {
-    defaultBackground: DefaultBackground,
-    snippetEditor: SnippetEditor
+    DefaultBackground,
+    SnippetEditor,
   },
   computed: {
     ...mapGetters({ user: "user" }),
@@ -317,4 +313,6 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+
+</style>

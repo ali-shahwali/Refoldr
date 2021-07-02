@@ -50,13 +50,13 @@ export default {
 .bgLight {
   background: #4e54c8;
   width: 100%;
-  height: calc(100vh - 48px);
+  height: 100vh;
 }
 
 .bgDark {
   background: #000;
   width: 100%;
-  height: calc(100vh - 48px);
+  height: 100vh;
 }
 
 .circles {
