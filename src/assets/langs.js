@@ -132,3 +132,8 @@ export const supportedLangs = [
         avatar: require("@/assets/langs/julia.svg")
     },
 ];
+
+export const getLangSvg = (lang) =>  {
+    if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
+    else return require("@/assets/langs/placeholder.svg");
+}

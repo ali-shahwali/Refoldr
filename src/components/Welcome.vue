@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section id="about-me">
+    <section>
       <v-row no-gutters>
         <default-background>
           <div class="py-12"></div>
@@ -96,7 +96,7 @@ import {mapGetters} from "vuex";
 export default {
   name: "Welcome",
   components: {
-    defaultBackground: DefaultBackground
+    DefaultBackground,
   },
   computed: {
     ...mapGetters({theme: "theme"})

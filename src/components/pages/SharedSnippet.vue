@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <appbar/>
   <v-container style="height: 100%" v-if="theme !== undefined && lang !== undefined">
     <v-row style="height: 100%">
       <v-col cols="2"></v-col>
@@ -101,6 +103,7 @@
     </v-snackbar>
   </v-container>
   <v-progress-linear indeterminate v-else></v-progress-linear>
+  </div>
 </template>
 
 <script>
@@ -110,6 +113,7 @@ import { supportedLangs } from "../../assets/langs";
 import store from "../../store";
 import {init} from "../../assets/editor";
 import {mapGetters} from "vuex";
+import Appbar from "../Appbar";
 
 export default {
   name: "SharedSnippet",
@@ -127,6 +131,7 @@ export default {
   },
   components: {
     editor: Editor,
+    Appbar
   },
   computed: {
     editorTheme() {
@@ -174,7 +179,7 @@ export default {
       document.body.removeChild(dummy);
       this.snackbarCopied = true;
     },
-    async saveToBank() {
+    /*async saveToBank() {
       await db
       .collection("snippets")
       .add({
@@ -185,7 +190,7 @@ export default {
         isFavorited: false,
         creationTime: this.snippet.creationTime,
       })
-    }
+    }*/
   },
   async created() {
 

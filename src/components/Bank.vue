@@ -2,7 +2,18 @@
   <div>
     <v-row no-gutters>
       <v-col cols="3">
-        <v-list :key="listKey" two-line style="height: calc(100vh - 112px); overflow-y: auto;">
+        <v-toolbar height="80">
+          <v-img max-width="40" src="../assets/logo.svg"></v-img>
+          <v-toolbar-title class="mx-3">
+            <div class="ml-4">
+              <strong style="font-size: 1.5rem" >Refoldr</strong>
+            </div>
+            <v-subheader style="height: auto">
+              Store & share code snippets
+            </v-subheader>
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-list :key="listKey" two-line style="height: calc(100vh - 192px); overflow-y: auto;">
           <v-list-item-group v-model="selectedSnippetIndex" color="primary">
             <div class="pa-4">
               <v-btn block @click="createNewSnippet" color="primary">
@@ -41,8 +52,44 @@
                 :key="index"
               ></v-divider>
             </template>
+
           </v-list-item-group>
         </v-list>
+        <v-toolbar>
+          <v-switch
+              :ripple="false"
+              :prepend-icon="switchIcon"
+              class="mt-6 mr-2"
+              :input-value="switchBool"
+              inset
+              persistent-hint
+              color="indigo"
+              @change="changeTheme"
+          ></v-switch>
+          <v-spacer/>
+          <v-menu top left min-width="200px" rounded offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn class="mr-2" icon x-large v-on="on">
+                <v-avatar color="indigo" size="40">
+                  <v-img :src="user.data.photoURL" />
+                </v-avatar>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-list-item-content class="justify-center">
+                <div class="mx-auto text-center">
+                  <p class="caption mt-1">
+                    {{ user.data.email }}
+                  </p>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn depressed rounded text @click="signOut">
+                    Sign out
+                  </v-btn>
+                </div>
+              </v-list-item-content>
+            </v-card>
+          </v-menu>
+        </v-toolbar>
       </v-col>
       <v-col cols="9">
         <snippet-editor
@@ -86,8 +133,8 @@
   </div>
 </template>
 <script>
-import { db, Timestamp } from "../firebase";
-import { supportedLangs } from "../assets/langs";
+import { db, Timestamp, auth } from "../firebase";
+import { supportedLangs, getLangSvg } from "../assets/langs";
 import SnippetEditor from "./SnippetEditor";
 import store from "../store";
 import DefaultBackground from "./subcomponents/DefaultBackground";
@@ -102,7 +149,8 @@ export default {
   computed: {
     ...mapGetters({ user: "user" }),
     ...mapGetters({ editorSettings: "editorSettings" }),
-    ...mapGetters(({lastVisit: "lastVisit"}))
+    ...mapGetters({lastVisit: "lastVisit"}),
+    ...mapGetters({ theme: "theme" })
   },
   watch: {
     snippets(value) {
@@ -120,15 +168,18 @@ export default {
       snackbarAlreadyExists: false,
       snackbarNewSnippetAlreadyExists: false,
       timeout: 2000,
-      listKey: 0
+      listKey: 0,
+      switchIcon: "",
+      switchBool: undefined
     };
   },
   methods: {
-    async toggleFavorite(id, bool) {
+    async toggleFavorite(snippet, bool) {
       await db
         .collection("snippets")
-        .doc(id)
+        .doc(snippet.id)
         .update({ isFavorited: bool });
+      this.selectSnippet(snippet);
     },
     async createNewSnippet() {
       // check to see if the user already has an empty new snippet on their account (prevent spamming)
@@ -228,13 +279,33 @@ export default {
 
       this.snippetKey += 1;
     },
-    getLangSvg(lang) {
-      if (lang !== null) return require(`@/assets/langs/${lang}.svg`);
-      else return require("@/assets/langs/placeholder.svg");
+    changeTheme() {
+      this.switchBool = !this.switchBool;
+      this.setSiteTheme(this.switchBool);
+
+      if (this.switchBool)
+        this.setEditorTheme("dracula");
+      else
+        this.setEditorTheme("chrome");
+
+      this.$vuetify.theme.dark = this.switchBool;
+
+      if (this.switchBool)
+        this.switchIcon = "mdi-moon-waning-crescent";
+      else
+        this.switchIcon = "mdi-white-balance-sunny";
     },
-    ...mapMutations({setLastSnippetIndex: "SET_LAST_SNIPPET_INDEX"})
+    getLangSvg,
+    ...mapMutations({setLastSnippetIndex: "SET_LAST_SNIPPET_INDEX"}),
+    ...mapMutations({ setSiteTheme: "SET_THEME" }),
+    ...mapMutations({ setEditorTheme: "SET_EDITOR_THEME" }),
+    signOut() {
+      auth.signOut();
+    },
   },
   mounted() {
+    this.switchBool = this.theme.dark;
+    this.switchIcon = this.theme.dark ? "mdi-moon-waning-crescent" : "mdi-white-balance-sunny";
     this.selectedSnippetIndex = this.lastVisit.lastSnippetIndex;
   },
   firestore: {

@@ -1,98 +1,174 @@
 <template>
   <div>
-    <v-toolbar flat height="76px">
-      <v-text-field
-        @input="fieldUpdate"
-        dense
-        solo
-        class="mt-6"
-        label="Title"
-        placeholder="Min 3 characters"
-        v-model="snippet.name"
-        style="max-width: 450px;"
-        spellcheck="false"
-      ></v-text-field>
-      <v-autocomplete
-        @input="fieldUpdate"
-        @change="editorKey += 1"
-        style="max-width: 300px;"
-        v-model="snippet.lang"
-        :items="langs"
-        dense
-        solo
-        class="mt-6 ml-5"
-        label="Language"
-        menu-props="auto"
-        spellcheck="false"
-        item-text="name"
-        item-value="value"
-      >
-        <template v-slot:selection="data">
-          <v-avatar
-            rounded
-            size="small"
-            style="height: 20px; width: 20px;"
-            class="mr-2"
-            left
-          >
-            <v-img :src="data.item.avatar"></v-img>
-          </v-avatar>
-          {{ data.item.name }}
-        </template>
-        <template v-slot:item="data">
-          <template>
-            <v-list-item-avatar
-              rounded
-              size="small"
-              style="height: 20px; width: 20px;"
-            >
-              <img :src="data.item.avatar" />
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title v-html="data.item.name"></v-list-item-title>
-            </v-list-item-content>
-          </template>
-        </template>
-      </v-autocomplete>
-
-      <div class="ml-4">
-        <v-btn
+    <editor
+      :key="editorKey"
+      @input="fieldUpdate"
+      class="editor"
+      v-model="snippet.content"
+      @init="editorInit(editorTheme, snippet.lang)"
+      :lang="snippet.lang"
+      :theme="theme"
+      width="100%"
+      height="calc(100vh - 48px)"
+      :options="{
+        useWorker: false,
+        selectionStyle: 'text',
+        enableLiveAutocompletion: true,
+        fontSize: '1.15rem',
+        highlightSelectedWord: true,
+        fadeFoldWidgets: true,
+        showPrintMargin: false,
+        highlightActiveLine: false,
+        scrollPastEnd: 0.2
+      }"
+    />
+    <div style="position: fixed; top: 30px; right: 35px">
+      <v-btn
           v-if="pendingSave"
-          class="mr-2"
+          class="mr-4"
           icon
           disabled
           loading
           x-small
           right
-        ></v-btn>
+      />
+      <v-btn
+          class="mr-4"
+          v-else
+          disabled
+          text
+          small
+          color="white">
+        <v-icon left>mdi-content-save</v-icon>Saved
+      </v-btn>
+    </div>
+    <div style="position: fixed; bottom: 70px; right: 35px">
+      <v-row>
+        <v-col cols="2">
+          <v-menu
+              top
+              content-class="elevation-0"
+              rounded
+              offset-y
+              :close-on-content-click="false"
+          >
+            <template v-slot:activator="{ on }">
+              <v-badge
+                  :value="langHover"
+                  transition="slide-x-transition"
+                  icon="mdi-code-tags"
+                  offset-x="58"
+                  offset-y="18"
+              >
+                <v-hover v-model="langHover">
+                  <v-btn
+                      class="mr-12"
+                      icon
+                      x-large
+                      v-on="on"
+                  >
+                    <v-avatar
+                        rounded
+                        size="40"
+                        style="height: 35px; width: 35px;"
+                    >
+                      <v-img :src="getLangSvg(snippet.lang)"></v-img>
+                    </v-avatar>
 
-        <v-btn v-else disabled text small color="white"
-          ><v-icon left>mdi-content-save</v-icon>Saved
-        </v-btn>
-      </div>
-      <v-spacer></v-spacer>
+                  </v-btn>
+                </v-hover>
+              </v-badge>
+            </template>
+              <v-autocomplete
+                  @input="fieldUpdate"
+                  @change="editorKey += 1"
+                  v-model="snippet.lang"
+                  :items="langs"
+                  class="mt-5"
+                  solo
+                  filled
+                  label="Language"
+                  menu-props="auto offsetY"
+                  spellcheck="false"
+                  item-text="name"
+                  item-value="value"
+              >
+                <template v-slot:selection="data">
+                  <v-avatar
+                      rounded
+                      size="small"
+                      style="height: 20px; width: 20px;"
+                      class="mr-2"
+                      left
+                  >
+                    <v-img :src="data.item.avatar"></v-img>
+                  </v-avatar>
+                  {{ data.item.name }}
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar
+                        rounded
+                        size="small"
+                        style="height: 20px; width: 20px;"
+                    >
+                      <img :src="data.item.avatar" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+          </v-menu>
+        </v-col>
+        <v-col cols="10">
+          <v-text-field
+              @input="fieldUpdate"
+              placeholder="Min 3 characters"
+              v-model="snippet.name"
+              rounded
+              solo-inverted
+              spellcheck="false"
+          />
+        </v-col>
+      </v-row>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="drawerOpen = !drawerOpen"
-            icon
+              v-if="snippet.isFavorited"
+              class="mr-4"
+              @click="toggleFavorite(snippet, false)"
+              v-bind="attrs"
+              v-on="on"
+              color="#F2C14E"
+              fab
           >
-            <v-icon dark>
-              mdi-cog
-            </v-icon>
+            <v-icon>mdi-star</v-icon>
+          </v-btn>
+          <v-btn
+              v-else
+              class="mr-4"
+              @click="toggleFavorite(snippet, true)"
+              v-bind="attrs"
+              v-on="on"
+              color="#99959B"
+              fab
+          >
+            <v-icon>mdi-star-outline</v-icon>
           </v-btn>
         </template>
-        <span>Editor settings</span>
+        <span>Favorite</span>
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-bind="attrs"
-            v-on="on"
-            @click="copySnippetToClipboard()"
-            icon
+              class="mr-4"
+              v-bind="attrs"
+              v-on="on"
+              @click="copySnippetToClipboard()"
+              color="#87B6E1"
+              fab
           >
             <v-icon dark>
               mdi-content-copy
@@ -104,36 +180,14 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-if="snippet.isFavorited"
-            @click="toggleFavorite(snippet.id, false)"
-            icon
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon color="yellow darken-3">mdi-star</v-icon>
-          </v-btn>
-          <v-btn
-            v-else
-            @click="toggleFavorite(snippet.id, true)"
-            v-bind="attrs"
-            v-on="on"
-            icon
-          >
-            <v-icon color="grey lighten-1">mdi-star-outline</v-icon>
-          </v-btn>
-        </template>
-        <span>Favorite</span>
-      </v-tooltip>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            link
-            :to="{ name: 'SharedSnippet', params: { id: snippet.id } }"
-            target="_blank"
-            v-bind="attrs"
-            v-on="on"
-            icon
-            color="primary"
+              class="mr-4"
+              link
+              :to="{ name: 'SharedSnippet', params: { id: snippet.id } }"
+              target="_blank"
+              v-bind="attrs"
+              v-on="on"
+              fab
+              color="#8790D9"
           >
             <v-icon>mdi-share</v-icon>
           </v-btn>
@@ -142,35 +196,35 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" @click="dialogDelete = true" icon>
-            <v-icon color="error">mdi-delete</v-icon>
+          <v-btn
+              class="mr-3"
+              v-bind="attrs"
+              v-on="on"
+              @click.stop="drawerOpen = !drawerOpen"
+              fab
+              color="#5948D5"
+          >
+            <v-icon dark>
+              mdi-cog
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>Editor settings</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              v-bind="attrs"
+              v-on="on"
+              @click="dialogDelete = true"
+              fab
+              color="#D7263D">
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
         <span>Delete</span>
       </v-tooltip>
-    </v-toolbar>
-    <editor
-      :key="editorKey"
-      @input="fieldUpdate"
-      class="editor"
-      v-model="snippet.content"
-      @init="editorInit(editorTheme, snippet.lang)"
-      :lang="snippet.lang"
-      :theme="theme"
-      width="100%"
-      height="calc(100vh - 188px)"
-      :options="{
-        useWorker: false,
-        selectionStyle: 'text',
-        enableLiveAutocompletion: true,
-        fontSize: '1.15rem',
-        highlightSelectedWord: true,
-        fadeFoldWidgets: true,
-        showPrintMargin: false,
-        highlightActiveLine: false
-      }"
-    ></editor>
-
+    </div>
     <v-snackbar
       style="margin: 0 1rem 4rem 0"
       color="error"
@@ -199,7 +253,6 @@
         </v-btn>
       </template>
     </v-snackbar>
-
     <v-dialog v-model="dialogDelete" max-width="30vw">
       <v-card>
         <v-card-actions>
@@ -325,7 +378,7 @@
 
 <script>
 import Editor from "vue2-ace-editor";
-import { supportedLangs } from "../assets/langs";
+import { supportedLangs, getLangSvg } from "../assets/langs";
 import store from "../store";
 import { mapMutations, mapGetters } from "vuex";
 import { debounce } from "debounce";
@@ -371,6 +424,7 @@ export default {
       state: "loading",
       firstLoad: false,
       editorKey: 0,
+      langHover: false,
     };
   },
   methods: {
@@ -404,8 +458,8 @@ export default {
     debouncedUpdate: debounce(function() {
       this.updateSnippet();
     }, 1000),
-    async toggleFavorite(id, bool) {
-      this.$emit("onToggleFavorite", this.snippet.id, bool);
+    async toggleFavorite(snippet, bool) {
+      this.$emit("onToggleFavorite", this.snippet, bool);
       this.snippet.isFavorited = bool;
     },
     copySnippetToClipboard() {
@@ -417,6 +471,7 @@ export default {
       document.body.removeChild(dummy);
       this.snackbarCopied = true;
     },
+    getLangSvg,
     ...mapMutations({ setEditorTheme: "SET_EDITOR_THEME" }),
     ...mapMutations({ setPreferredLang: "SET_PREFERRED_LANG" }),
     _saveListener(e) {
@@ -443,5 +498,8 @@ export default {
 <style lang="scss">
 .v-parallax__image {
   transform: translate(-50%, 0px) !important;
+}
+
+.v-menu__content {
 }
 </style>
